@@ -22,8 +22,6 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-require_once PATH_t3lib . 'class.t3lib_softrefproc.php';
-
 /**
  * This XCLASS enable two hooks which allows the processing of linkhandler values to the refindex.
  *

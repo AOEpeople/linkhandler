@@ -22,11 +22,12 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-if ( version_compare(TYPO3_version, '4.4.0', '<') ) {
-	require_once t3lib_extMgm::extPath('linkhandler') . 'patch/interfaces/interface.softref_typolinkLinkHandlerHook.php';
-} else {
-	require_once PATH_t3lib . 'interfaces/interface.softref_typolinkLinkHandlerHook.php';
-}
+// @todo how did this ever work? The interface is not part of the core (checked with 4.7 and 6.0)?!?
+//if ( version_compare(TYPO3_version, '4.4.0', '<') ) {
+//	require_once t3lib_extMgm::extPath('linkhandler') . 'patch/interfaces/interface.softref_typolinkLinkHandlerHook.php';
+//} else {
+//	require_once PATH_t3lib . 'interfaces/interface.softref_typolinkLinkHandlerHook.php';
+//}
 
 /**
  * {@inheritdoc}
