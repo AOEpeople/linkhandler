@@ -1,4 +1,6 @@
 <?php
+namespace AOE\Linkhandler\Hooks;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -23,21 +25,12 @@
  ***************************************************************/
 
 /**
- * {@inheritdoc}
- *
- * class.tx_linkhandler_localRecordListGetTableHook.php
+ * GetTable hook
  *
  * @author Michael Klapper <klapper@aoemedia.de>
- * @copyright Copyright (c) 2009, AOE media GmbH <dev@aoemedia.de>
- * @version $Id$
- * @date $Date$
- * @since 21.10.2009 - 15:15:04
- * @category category
- * @package TYPO3
- * @subpackage tx_linkhandler
- * @access public
+ * @package Linkhandler
  */
-class tx_linkhandler_localRecordListGetTableHook implements \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface {
+class GetTable implements \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface {
 
 	/**
 	 * Modifies the DB list query
@@ -45,29 +38,28 @@ class tx_linkhandler_localRecordListGetTableHook implements \TYPO3\CMS\Backend\R
 	 * Default behavior is that the db list only shows the localisation parent records. If a user have set the
 	 * language settings out of the page module, so the user get the specific language of records listed.
 	 *
-	 * @param	string $table the current database table
-	 * @param	integer $pageId the record's page ID
-	 * @param	string $additionalWhereClause an additional WHERE clause
-	 * @param	string $selectedFieldsList comma separated list of selected fields
-	 * @param	localRecordList $parentObject parent localRecordList object
-	 *
-	 * @access public
-	 * @return	void
-	 *
-	 * @author Michael Klapper <michael.klapper@aoemedia.de>
+	 * @param string $table the current database table
+	 * @param integer $pageId the record's page ID
+	 * @param string $additionalWhereClause an additional WHERE clause
+	 * @param string $selectedFieldsList comma separated list of selected fields
+	 * @param \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList $parentObject parent localRecordList object
+	 * @return void
 	 */
 	public function getDBlistQuery($table, $pageId, &$additionalWhereClause, &$selectedFieldsList, &$parentObject) {
-		global $TCA, $BE_USER;
 
-		if ((bool)$parentObject->localizationView === false ) {
+		if ((bool) $parentObject->localizationView === FALSE ) {
 			$mode = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mode');
 
-			if ( $mode == 'wizard' || $mode == 'rte') {
+			if ($mode == 'wizard' || $mode == 'rte') {
 
-				if (is_array($TCA[$table]['ctrl']) && array_key_exists('transOrigPointerField', $TCA[$table]['ctrl']) && array_key_exists('languageField', $TCA[$table]['ctrl']) ) {
-					$transOrigPointerField = $TCA[$table]['ctrl']['transOrigPointerField'];
-					$languageField         = $TCA[$table]['ctrl']['languageField'];
-					$sysLanguageId         = $this->getUserSysLanguageUidForLanguageListing();
+				if (
+					is_array($GLOBALS['TCA'][$table]['ctrl']) &&
+					array_key_exists('transOrigPointerField', $GLOBALS['TCA'][$table]['ctrl']) &&
+					array_key_exists('languageField', $GLOBALS['TCA'][$table]['ctrl'])
+				) {
+					$transOrigPointerField = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'];
+					$languageField = $GLOBALS['TCA'][$table]['ctrl']['languageField'];
+					$sysLanguageId = $this->getUserSysLanguageUidForLanguageListing();
 
 						// if the page module is configured to display a different language than default
 					if ($sysLanguageId > 0) {
@@ -84,32 +76,24 @@ class tx_linkhandler_localRecordListGetTableHook implements \TYPO3\CMS\Backend\R
 	/**
 	 * Find the selected sys_language_uid which are set by the templavoila page module.
 	 *
-	 * @access private
 	 * @return integer
-	 *
-	 * @author Michael Klapper <michael.klapper@aoemedia.de>
 	 */
 	private function getUserSysLanguageUidForLanguageListing() {
-		global $BE_USER;
 		$sysLanguageId = 0;
-		$moduleKey     = 'web_txtemplavoilaM1';
+		$moduleKey = 'web_txtemplavoilaM1';
 
-		if (array_key_exists('web_tvpagemodulM1', $BE_USER->uc['moduleData'])) {
+		if (array_key_exists('web_tvpagemodulM1', $GLOBALS['BE_USER']->uc['moduleData'])) {
 			$moduleKey = 'web_tvpagemodulM1';
 		}
 
 		if (
-				is_array($BE_USER->uc['moduleData'][$moduleKey])
-			&&
-				array_key_exists('language', $BE_USER->uc['moduleData'][$moduleKey])
-			&&
-				(\TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($BE_USER->uc['moduleData'][$moduleKey]['language']) > 0)
-			) {
-			$sysLanguageId = $BE_USER->uc['moduleData'][$moduleKey]['language'];
+			is_array($GLOBALS['BE_USER']->uc['moduleData'][$moduleKey]) &&
+			array_key_exists('language', $GLOBALS['BE_USER']->uc['moduleData'][$moduleKey]) &&
+			(\TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($GLOBALS['BE_USER']->uc['moduleData'][$moduleKey]['language']) > 0)
+		) {
+			$sysLanguageId = $GLOBALS['BE_USER']->uc['moduleData'][$moduleKey]['language'];
 		}
 
 		return $sysLanguageId;
 	}
 }
-
-?>

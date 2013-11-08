@@ -1,8 +1,10 @@
 <?php
+namespace AOE\Linkhandler;
+
 /***************************************************************
  *  Copyright notice
  *
- *  Copyright (c) 2008, Daniel P�tzinger <daniel.poetzinger@aoemedia.de>
+ *  Copyright (c) 2008, Daniel Pötzinger <daniel.poetzinger@aoemedia.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,25 +27,22 @@
 /**
  * Tabhandler interface
  *
- * @author	Daniel Poetzinger (AOE media GmbH)
- * @version $Id: $
- * @date 08.04.2009 - 15:06:25
- * @package TYPO3
- * @subpackage tx_linkhandler
- * @access public
+ * @author Daniel Poetzinger (AOE media GmbH)
+ * @package Linkhandler
  */
-interface tx_linkhandler_tabHandler {
+interface TabHandlerInterface {
 
 	/**
-	 * constructur for the tabHandler. Normally used to sets some internal vars
+	 * Constructor for the tabHandler. Normally used to sets some internal vars
 	 *
-	 * @param browse_links $browseLinksObj
+	 * @param \TYPO3\CMS\Rtehtmlarea\BrowseLinks $browseLinksObj
 	 * @param string $addPassOnParams
 	 * @param array $configuration
 	 * @param string $currentLinkValue
-	 * @param boolean $isRTE
+	 * @param bool $isRte
+	 * @param int $currentPid
 	 */
-	public function __construct($browseLinksObj, $addPassOnParams, $configuration, $currentLinkValue, $isRTE, $currentPid);
+	public function __construct(\TYPO3\CMS\Rtehtmlarea\BrowseLinks $browseLinksObj, $addPassOnParams, $configuration, $currentLinkValue, $isRte, $currentPid);
 
 	/**
 	 * should return the correct info array that is required for the link wizard.
@@ -59,14 +58,8 @@ interface tx_linkhandler_tabHandler {
 	/**
 	 * returns a new tab for the browse links wizard
 	 *
-	 * @param	string current link selector action
-	 * @return	string a tab for the selected link action
+	 * @param string current link selector action
+	 * @return string a tab for the selected link action
 	 */
-	function getTabContent();
+	public function getTabContent();
 }
-
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/linkhandler/classes/interface.tx_linkhandler_tabHandler.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/linkhandler/classes/interface.tx_linkhandler_tabHandler.php']);
-}
-
-?>
