@@ -144,7 +144,7 @@ class RecordTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView {
 			return;
 		}
 		if (empty($this->cachedParams)) {
-			$pGet = t3lib_div::_GP('P');
+			$pGet = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('P');
 			$parameters = array();
 			if (is_array($pGet)) {
 				foreach ($pGet as $k => $v) {
@@ -175,5 +175,18 @@ class RecordTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView {
 		$aOnClick = "return jumpToUrl('" . $this->thisScript . '?PM=' . $cmd . $this->getaddPassOnParams() . "','" . $anchor . "');";
 
 		return '<a href="#"' . $name . ' onclick="' . htmlspecialchars($aOnClick) . '">' . $icon . '</a>';
+	}
+
+	/**
+	 * Returns TRUE if a doktype can be linked.
+	 *
+	 * @param integer $doktype Doktype value to test
+	 * @param integer $uid uid to test.
+	 * @return boolean
+	 */
+	protected function ext_isLinkable($doktype, $uid) {
+		if ($uid && $doktype < 199) {
+			return TRUE;
+		}
 	}
 }

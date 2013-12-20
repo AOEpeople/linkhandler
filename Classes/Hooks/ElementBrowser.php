@@ -187,12 +187,11 @@ class ElementBrowser implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserHoo
 	* returns a array of names available tx_linkhandler_tabHandler
 	*/
 	protected function getAllRegisteredTabHandlerClassnames() {
-		$default = array('tx_linkhandler_recordTab');
+		$default = array('AOE\Linkhandler\RecordTab');
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['linkhandler/class.tx_linkhandler_browselinkshooks.php'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['linkhandler/class.tx_linkhandler_browselinkshooks.php'] as $tabHandler) {
 				list($file, $class) = \TYPO3\CMS\Core\Utility\GeneralUtility::revExplode(':', $tabHandler, 2);
-				include_once $file;
 				$default[] = $class;
 			}
 		}

@@ -121,10 +121,13 @@ class RecordTab implements \AOE\Linkhandler\TabHandlerInterface {
 
 		/** @var \AOE\Linkhandler\Record\RecordTree $pagetree*/
 		$pagetree = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('AOE\Linkhandler\Record\RecordTree');
+		/** Initialize page tree, @see \TYPO3\CMS\Backend\Tree\View\AbstractTreeView */
+		$pagetree->init();
 		$pagetree->browselistObj = $this->browseLinksObj;
 		if (array_key_exists('onlyPids', $this->configuration) && $this->configuration['onlyPids'] != '') {
 			$pagetree->expandAll = TRUE;
 		}
+
 		$tree = $pagetree->getBrowsableTree();
 		$cElements = $this->expandPageRecords();
 		$content .= '
