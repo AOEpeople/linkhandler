@@ -165,6 +165,8 @@ class Handler {
 	 */
 	protected function mergeTypoScript(array $linkConfigurationArray , array $typoLinkConfigurationArray, $recordTableName) {
 
+		unset($typoLinkConfigurationArray['parameter']);
+
 			// precompile the "additionalParams"
 		$linkConfigurationArray[$recordTableName . '.']['additionalParams'] = $this->localContentObject->stdWrap($linkConfigurationArray[$recordTableName . '.']['additionalParams'], $linkConfigurationArray[$recordTableName . '.']['additionalParams.']);
 		unset($linkConfigurationArray[$recordTableName . '.']['additionalParams.']);
