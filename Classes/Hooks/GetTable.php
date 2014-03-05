@@ -53,13 +53,18 @@ class GetTable implements \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookIn
 			if ($mode == 'wizard' || $mode == 'rte') {
 
 				if (
-					is_array($GLOBALS['TCA'][$table]['ctrl']) &&
-					array_key_exists('transOrigPointerField', $GLOBALS['TCA'][$table]['ctrl']) &&
-					array_key_exists('languageField', $GLOBALS['TCA'][$table]['ctrl'])
+					is_array($GLOBALS['TCA'][$table]['ctrl'])
+					&& array_key_exists('transOrigPointerField', $GLOBALS['TCA'][$table]['ctrl'])
+					&& array_key_exists('languageField', $GLOBALS['TCA'][$table]['ctrl'])
 				) {
 					$transOrigPointerField = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'];
 					$languageField = $GLOBALS['TCA'][$table]['ctrl']['languageField'];
 					$sysLanguageId = $this->getUserSysLanguageUidForLanguageListing();
+
+					// Even if no language has been selected in the TemplaVoilà page module, this might still be a localized record
+					if (0 === (int)$sysLanguageId) {
+						$sysLanguageId = $this->getSysLanguageUidFromParentRecord($parentObject);
+					}
 
 						// if the page module is configured to display a different language than default
 					if ($sysLanguageId > 0) {
@@ -92,6 +97,38 @@ class GetTable implements \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookIn
 			(\TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($GLOBALS['BE_USER']->uc['moduleData'][$moduleKey]['language']) > 0)
 		) {
 			$sysLanguageId = $GLOBALS['BE_USER']->uc['moduleData'][$moduleKey]['language'];
+		}
+
+		return $sysLanguageId;
+	}
+
+	/**
+	 * Get sys_language_uid of the parent (tt_content) record
+	 *
+	 * @param \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList $databaseRecordList
+	 * @return integer
+	 */
+	protected function getSysLanguageUidFromParentRecord(\TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList $databaseRecordList) {
+		$sysLanguageId = 0;
+
+		if (
+			property_exists($databaseRecordList, 'browselistObj')
+			&& property_exists($databaseRecordList->browselistObj, 'P')
+			&& is_array($databaseRecordList->browselistObj->P)
+			&& array_key_exists('table', $databaseRecordList->browselistObj->P)
+			&& array_key_exists('uid', $databaseRecordList->browselistObj->P)
+		) {
+			$parentRecord = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord(
+				$databaseRecordList->browselistObj->P['table'],
+				$databaseRecordList->browselistObj->P['uid']
+			);
+			if (
+				is_array($parentRecord)
+				&& array_key_exists('sys_language_uid', $parentRecord)
+				&& \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($parentRecord['sys_language_uid'])
+			) {
+				$sysLanguageId = (int)$parentRecord['sys_language_uid'];
+			}
 		}
 
 		return $sysLanguageId;
