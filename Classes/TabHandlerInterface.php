@@ -35,14 +35,14 @@ interface TabHandlerInterface {
 	/**
 	 * Constructor for the tabHandler. Normally used to sets some internal vars
 	 *
-	 * @param \TYPO3\CMS\Rtehtmlarea\BrowseLinks $browseLinksObj
+	 * @param \TYPO3\CMS\Recordlist\Browser\ElementBrowser $browseLinksObj
 	 * @param string $addPassOnParams
 	 * @param array $configuration
 	 * @param string $currentLinkValue
 	 * @param bool $isRte
 	 * @param int $currentPid
 	 */
-	public function __construct(\TYPO3\CMS\Rtehtmlarea\BrowseLinks $browseLinksObj, $addPassOnParams, $configuration, $currentLinkValue, $isRte, $currentPid);
+	public function __construct(\TYPO3\CMS\Recordlist\Browser\ElementBrowser $browseLinksObj, $addPassOnParams, $configuration, $currentLinkValue, $isRte, $currentPid);
 
 	/**
 	 * should return the correct info array that is required for the link wizard.

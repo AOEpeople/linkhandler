@@ -50,14 +50,14 @@ class RecordTab implements \AOE\Linkhandler\TabHandlerInterface {
 	/**
 	 * Initialize the class
 	 *
-	 * @param \TYPO3\CMS\Rtehtmlarea\BrowseLinks $browseLinksObj
+	 * @param \TYPO3\CMS\Recordlist\Browser\ElementBrowser $browseLinksObj
 	 * @param string $addPassOnParams
 	 * @param array $configuration
 	 * @param string $currentLinkValue
 	 * @param bool $isRte
 	 * @param int $currentPid
 	 */
-	public function __construct(\TYPO3\CMS\Rtehtmlarea\BrowseLinks $browseLinksObj, $addPassOnParams, $configuration, $currentLinkValue, $isRte, $currentPid) {
+	public function __construct(\TYPO3\CMS\Recordlist\Browser\ElementBrowser $browseLinksObj, $addPassOnParams, $configuration, $currentLinkValue, $isRte, $currentPid) {
 		$environment = '';
 		$this->browseLinksObj = $browseLinksObj;
 
