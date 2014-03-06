@@ -126,6 +126,7 @@ class RecordTab implements \AOE\Linkhandler\TabHandlerInterface {
 		$pagetree->browselistObj = $this->browseLinksObj;
 		if (array_key_exists('onlyPids', $this->configuration) && $this->configuration['onlyPids'] != '') {
 			$pagetree->expandAll = TRUE;
+            $pagetree->expandFirst = 1;
 		}
 
 		$tree = $pagetree->getBrowsableTree();
