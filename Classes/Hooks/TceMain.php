@@ -48,8 +48,8 @@ class TceMain {
 		if (isset($GLOBALS['_POST']['_savedokview_x'])) {
 			$settingFound = FALSE;
 			$currentPageId = \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($GLOBALS['_POST']['popViewId']);
-			$rootLineStruct = \TYPO3\CMS\Backend\Utility\BackendUtility::BEgetRootLine($currentPageId);
-			$defaultPageId = (isset($rootLineStruct[0]) && array_key_exists('uid', $rootLineStruct[0])) ? $rootLineStruct[0]['uid'] : $currentPageId ;
+			$rootPageData= $this->getRootPage($currentPageId);
+			$defaultPageId = (isset($rootPageData) && array_key_exists('uid', $rootPageData)) ? $rootPageData['uid'] : $currentPageId ;
 
 			$pagesTsConfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getPagesTSconfig($currentPageId, $rootLineStruct);
 			$handlerConfigurationStruct = $pagesTsConfig['mod.']['tx_linkhandler.'];
@@ -101,14 +101,38 @@ class TceMain {
 					}
 				}
 
+				$previewDomainRootline = \TYPO3\CMS\Backend\Utility\BackendUtility::BEgetRootLine($previewPageId);
+				$previewDomain = \TYPO3\CMS\Backend\Utility\BackendUtility::getViewDomain($previewPageId, $previewDomainRootline);
+
 				$linkParamValue = 'record:' . $table . ':' . $id;
 
 				$queryString = '&eID=linkhandlerPreview&linkParams=' . $linkParamValue . $wsPreviewValue;
 				$languageParam = '&L=' . $recordArray['sys_language_uid'];
-				$queryString  .= $languageParam . '&authCode=' . t3lib_div::stdAuthCode($linkParamValue . $wsPreviewValue . $recordArray['sys_language_uid'], '', 32);
+				$queryString  .= $languageParam . '&authCode=' . \TYPO3\CMS\Core\Utility\GeneralUtility::stdAuthCode($linkParamValue . $wsPreviewValue . $recordArray['sys_language_uid'], '', 32);
 
-				$GLOBALS['_POST']['viewUrl'] = '/index.php?id=' . $previewPageId . $queryString . '&y=';
+				$GLOBALS['_POST']['viewUrl'] = $previewDomain . '/index.php?id=' . $previewPageId . $queryString . '&y=';
 			}
 		}
 	}
+
+	/**
+	 * Returns data of root page (page with "is_siteroot" flag)
+	 *
+	 * @param integer $pageId: Id of page you want to get the root page data
+	 * @return array | null
+	 */
+	protected function getRootPage($pageId) {
+		$rootPageData = NULL;
+
+		$rootLineStruct = \TYPO3\CMS\Backend\Utility\BackendUtility::BEgetRootLine($pageId);
+		foreach($rootLineStruct as $page) {
+			if ($page['is_siteroot'] == 1) {
+				$rootPageData = $page;
+				break;
+			}
+		}
+
+		return $rootPageData;
+	}
+
 }

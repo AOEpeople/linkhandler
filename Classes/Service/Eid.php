@@ -113,8 +113,9 @@ class Eid {
 	 * @return	void
 	 */
 	protected function initTSFE() {
-		$pid = \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id'));
+		\TYPO3\CMS\Frontend\Utility\EidUtility::initTCA();
 
+		$pid = \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id'));
 		$GLOBALS['TSFE'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pid, 0, 0, 0);
 
 		$GLOBALS['TSFE']->connectToDB();
@@ -122,7 +123,6 @@ class Eid {
 		$GLOBALS['TSFE']->checkAlternativeIdMethods();
 
 		$GLOBALS['TSFE']->determineId();
-		$GLOBALS['TSFE']->getCompressedTCarray();
 		$GLOBALS['TSFE']->initTemplate();
 		$GLOBALS['TSFE']->getConfigArray();
 		$GLOBALS['TSFE']->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
@@ -144,7 +144,7 @@ class Eid {
 			$GLOBALS['TSFE']->config['config']['simulateStaticDocuments'] = 0;
 		}
 
-		$linkhandler = t3lib_div::makeInstance('AOE\Linkhandler\Handler'); /** @var \AOE\Linkhandler\Handler $linkhandler */
+		$linkhandler = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('AOE\Linkhandler\Handler'); /** @var \AOE\Linkhandler\Handler $linkhandler */
 
 		$linkString = $linkhandler->main (
 			'',
