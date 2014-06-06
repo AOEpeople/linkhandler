@@ -12,10 +12,10 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'AOE link handler',
-	'description' => 'Enables userfriendly links to records like tt_news etc... Configure new Tabs to the link-wizard. (by AOE media GmbH)',
+	'description' => 'Enables user friendly links to records like tt_news etc... Configure new Tabs to the link-wizard. (by AOE GmbH)',
 	'category' => 'plugin',
 	'author' => 'Daniel Poetzinger, Michael Klapper',
-	'author_email' => 'dev@aoemedia.de',
+	'author_email' => 'dev@aoe.com',
 	'author_company' => 'AOE GmbH',
 	'shy' => 0,
 	'dependencies' => '',

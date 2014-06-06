@@ -4,7 +4,7 @@ namespace AOE\Linkhandler\Service;
 /***************************************************************
  *  Copyright notice
  *
- *  Copyright (c) 2009, AOE media GmbH <dev@aoemedia.de>
+ *  Copyright (c) 2009, AOE GmbH <dev@aoe.com>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,11 +24,14 @@ namespace AOE\Linkhandler\Service;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * eID script
  *
- * @author Michael Klapper <klapper@aoemedia.de>
- * @package Linkhandler
+ * @author  Michael Klapper <michael.klapper@aoe.com>
+ * @author  Chetan Thapliyal <chetan.thapliyal@aoe.com>
+ * @package AOE\Linkhandler\Service
  */
 class Eid {
 
@@ -69,7 +72,7 @@ class Eid {
 	/**
 	 * Contains all required values to build an WS preview link.
 	 *
-	 * The Value is seperated by ":"#
+	 * The Value is separated by ":"#
 	 * - Workspace ID
 	 * - Backend user ID
 	 * - Time to live for the WS link
@@ -80,31 +83,63 @@ class Eid {
 	protected $WSPreviewValue = NULL;
 
 	/**
-	 * Class constructor
+	 * @var array
 	 */
-	public function __construct() {
-		$authCode = (string) \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('authCode');
-		$linkParams = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('linkParams');
-		$this->languageId = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('L');
+	protected $typoLinkSettings = array();
 
-			// extract the linkhandler and WS preview prameter
-		if ( strpos($linkParams, ';') > 0) {
-			list ($this->linkHandlerParams, $this->WSPreviewValue)  = explode(';', $linkParams);
-			$this->isWsPreview = TRUE;
+
+	/**
+	 * Initializes class instance.
+	 */
+	public function initialize() {
+		$authCode = (string) GeneralUtility::_GP('authCode');
+		$linkParams = GeneralUtility::_GP('linkParams');
+
+		$this->validateAuthCode($authCode, $linkParams);
+
+		$this->typoLinkSettings = array (
+			'returnLast' => 'url',
+			'additionalParams' => '&L=' . $this->languageId
+		);
+
+		$this->initTSFE();
+
+			// extract the linkhandler and WS preview parameters
+		if (strpos($linkParams, ';') > 0) {
+			list($this->linkHandlerParams, $this->WSPreviewValue) = explode(';', $linkParams);
+			$this->initializeWorkspacePreviewContext();
 		} else {
 			$this->linkHandlerParams = $linkParams;
 		}
 
 		list($this->linkHandlerKeyword) = explode(':', $this->linkHandlerParams);
 		$this->linkHandlerValue = str_replace($this->linkHandlerKeyword . ':', '', $this->linkHandlerParams);
+	}
 
-		// check the authCode
-		if (\TYPO3\CMS\Core\Utility\GeneralUtility::stdAuthCode($linkParams . $this->languageId, '', 32) !== $authCode ) {
+	/**
+	 * @param  string $authCode
+	 * @param  string $linkParams
+	 */
+	private function validateAuthCode($authCode, $linkParams) {
+		$expectedAuthCode = GeneralUtility::stdAuthCode($linkParams . $this->languageId, '', 32);
+		if ($expectedAuthCode !== $authCode) {
 			header('HTTP/1.0 401 Access denied.');
 			exit('Access denied.');
 		}
+	}
 
-		$this->initTSFE();
+	/**
+	 * Initializes workspace preview context.
+	 */
+	private function initializeWorkspacePreviewContext() {
+		$this->isWsPreview = TRUE;
+
+			// disable realUrl and simulateStaticDocuments
+		$GLOBALS['TSFE']->config['config']['tx_realurl_enable'] = 0;
+		$GLOBALS['TSFE']->config['config']['simulateStaticDocuments'] = 0;
+
+		$workspaceId = strstr($this->WSPreviewValue, ':', true);
+		$this->typoLinkSettings['additionalParams'] .= '&ADMCMD_previewWS=' . $workspaceId;
 	}
 
 	/**
@@ -115,8 +150,8 @@ class Eid {
 	protected function initTSFE() {
 		\TYPO3\CMS\Frontend\Utility\EidUtility::initTCA();
 
-		$pid = \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id'));
-		$GLOBALS['TSFE'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pid, 0, 0, 0);
+		$pid = \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger(GeneralUtility::_GP('id'));
+		$GLOBALS['TSFE'] = GeneralUtility::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pid, 0, 0, 0);
 
 		$GLOBALS['TSFE']->connectToDB();
 		$GLOBALS['TSFE']->initFEuser(); //!TODO first check if already a fe_user session exists - otherwise this line will overwrite the existing one
@@ -125,7 +160,7 @@ class Eid {
 		$GLOBALS['TSFE']->determineId();
 		$GLOBALS['TSFE']->initTemplate();
 		$GLOBALS['TSFE']->getConfigArray();
-		$GLOBALS['TSFE']->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
+		$GLOBALS['TSFE']->cObj = GeneralUtility::makeInstance('TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
 	}
 
 	/**
@@ -133,47 +168,50 @@ class Eid {
 	 * @return void
 	 */
 	public function process() {
-		$typoLinkSettingsArray = array (
-			'returnLast' => 'url',
-			'additionalParams' => '&L=' . $this->languageId
-		);
 
-		// if we need a WS preview link we need to disable the realUrl and simulateStaticDocuments
-		if ($this->isWsPreview === TRUE) {
-			$GLOBALS['TSFE']->config['config']['tx_realurl_enable'] = 0;
-			$GLOBALS['TSFE']->config['config']['simulateStaticDocuments'] = 0;
-		}
+		/** @var \AOE\Linkhandler\Handler $linkhandler */
+		$linkhandler = GeneralUtility::makeInstance('AOE\Linkhandler\Handler');
 
-		$linkhandler = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('AOE\Linkhandler\Handler'); /** @var \AOE\Linkhandler\Handler $linkhandler */
-
-		$linkString = $linkhandler->main (
+		$linkString = $linkhandler->main(
 			'',
-			$typoLinkSettingsArray,
+			$this->typoLinkSettings,
 			$this->linkHandlerKeyword,
 			$this->linkHandlerValue,
 			$this->linkHandlerParams,
 			$GLOBALS['TSFE']->cObj
 		);
 
-		if ($this->isWsPreview === TRUE) {
-			list ($wsId, $userId, $timeToLive) = explode(':', $this->WSPreviewValue);
+		$queryString =  $this->isWsPreview
+						? $this->generateWorkspacePreviewUri($GLOBALS['TSFE']->cObj->lastTypoLinkLD['totalURL'])
+						: $linkString;
 
-			$queryString = 'index.php?ADMCMD_prev=' . \TYPO3\CMS\Backend\Utility\BackendUtility::compilePreviewKeyword (
-				str_replace('index.php?', '', $GLOBALS['TSFE']->cObj->lastTypoLinkLD['totalURL']) . '&ADMCMD_previewWS=' . $wsId,
-				$userId,
-				$timeToLive
-			);
-		} else {
-			$queryString = $linkString;
-		}
-
-		$fullUrl = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $queryString;
+		$fullUrl = GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $queryString;
 
 		header('Location: ' . $fullUrl);
 		exit();
 	}
+
+	/**
+	 * @param  string $uri
+	 * @return string
+	 */
+	private function generateWorkspacePreviewUri($uri) {
+		list (, $userId, $timeToLive) = explode(':', $this->WSPreviewValue);
+
+		/** @var \TYPO3\CMS\Version\Hook\PreviewHook $previewObject */
+		$previewObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Version\\Hook\\PreviewHook');
+
+		$uri = 'index.php?ADMCMD_prev=' . $previewObject->compilePreviewKeyword(
+			str_replace('index.php?', '', $uri),
+			$userId,
+			$timeToLive
+		);
+
+		return $uri;
+	}
 }
 
 /** @var \AOE\Linkhandler\Service\Eid $linkhandlerService */
-$linkhandlerService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('AOE\Linkhandler\Service\Eid');
+$linkhandlerService = GeneralUtility::makeInstance('AOE\Linkhandler\Service\Eid');
+$linkhandlerService->initialize();
 $linkhandlerService->process();
