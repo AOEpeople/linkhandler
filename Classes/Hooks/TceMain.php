@@ -4,7 +4,7 @@ namespace AOE\Linkhandler\Hooks;
 /***************************************************************
  *  Copyright notice
  *
- *  Copyright (c) 2009, AOE media GmbH <dev@aoemedia.de>
+ *  Copyright (c) 2009, AOE GmbH <dev@aoe.com>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,31 +27,30 @@ namespace AOE\Linkhandler\Hooks;
 /**
  * TCEmain hook
  *
- * @author Michael Klapper <klapper@aoemedia.de>
+ * @author  Michael Klapper <michael.klapper@aoe.com>
  * @package Linkhandler
  */
 class TceMain {
 
 	/**
-	 * This method is called by a hook in the TYPO3 Core Engine (TCEmain) when a record is saved.
+	 * This method is called by a hook in the TYPO3 core when a record is saved.
 	 *
-	 * We use the tx_linkhandler for backend "save & show" button to display records on the configured detail view page
+	 * We use the tx_linkhandler for backend "save & show" button to display records on the configured detail view page.
 	 *
-	 * @param array $fieldArray: The field names and their values to be processed (passed by reference)
-	 * @param string $table: The table TCEmain is currently processing
-	 * @param string $id: The records id (if any)
-	 * @param object $pObj: Reference to the parent object (TCEmain)
-	 * @return void
+	 * @param  string  $status                                  Type of database operation i.e. new/update.
+	 * @param  string  $table                                   The table currently being processed.
+	 * @param  integer $id                                      The records id (if any).
+	 * @param  array   $fieldArray                              The field names and their values to be processed (passed by reference).
+	 * @param  \TYPO3\CMS\Core\DataHandling\DataHandler $pObj   Reference to the parent object.
 	 */
-	public function processDatamap_preProcessFieldArray($fieldArray, $table, $id, $pObj) {
-
+	public function processDatamap_afterDatabaseOperations($status, $table, $id, $fieldArray, $pObj) {
 		if (isset($GLOBALS['_POST']['_savedokview_x'])) {
 			$settingFound = FALSE;
 			$currentPageId = \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($GLOBALS['_POST']['popViewId']);
 			$rootPageData= $this->getRootPage($currentPageId);
 			$defaultPageId = (isset($rootPageData) && array_key_exists('uid', $rootPageData)) ? $rootPageData['uid'] : $currentPageId ;
 
-			$pagesTsConfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getPagesTSconfig($currentPageId, $rootLineStruct);
+			$pagesTsConfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getPagesTSconfig($currentPageId);
 			$handlerConfigurationStruct = $pagesTsConfig['mod.']['tx_linkhandler.'];
 
 				// search for the current setting for given table
@@ -75,8 +74,8 @@ class TceMain {
 				}
 
 				if (
-					array_key_exists('previewPageId', $handlerConfigurationStruct[$selectedConfiguration]) &&
-					(\TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($handlerConfigurationStruct[$selectedConfiguration]['previewPageId']) > 0)
+						array_key_exists('previewPageId', $handlerConfigurationStruct[$selectedConfiguration]) &&
+						(\TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($handlerConfigurationStruct[$selectedConfiguration]['previewPageId']) > 0)
 				) {
 					$previewPageId = \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($handlerConfigurationStruct[$selectedConfiguration]['previewPageId']);
 				} else {
