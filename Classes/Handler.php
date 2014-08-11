@@ -55,16 +55,21 @@ class Handler {
 
 		// extract link params like "target", "css-class" or "title"
 		$additionalLinkParameters = str_replace($linkHandlerKeyword . ':' . $linkHandlerValue, '', $linkParameters);
-		list ($recordTableName, $recordUid) = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(':', $linkHandlerValue);
+		if (substr_count($linkHandlerValue, ':') == 2) {
+			list ($recordActionName, $recordTableName, $recordUid) = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(':', $linkHandlerValue);
+		} else {
+			list ($recordTableName, $recordUid) = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(':', $linkHandlerValue);
+			$recordActionName = $recordTableName;
+		}
 
 		$recordArray = $this->getCurrentRecord($recordTableName, $recordUid);
-		if ($this->isRecordLinkable($recordTableName, $typoScriptConfiguration, $recordArray)) {
+		if ($this->isRecordLinkable($recordActionName, $typoScriptConfiguration, $recordArray)) {
 
 			$this->localContentObject = clone $contentObjectRenderer;
 			$this->localContentObject->start($recordArray, '');
-			$typoScriptConfiguration[$recordTableName . '.']['parameter'] .= $additionalLinkParameters;
+			$typoScriptConfiguration[$recordActionName . '.']['parameter'] .= $additionalLinkParameters;
 
-			$currentLinkConfigurationArray = $this->mergeTypoScript($typoScriptConfiguration, $typoLinkConfiguration, $recordTableName);
+			$currentLinkConfigurationArray = $this->mergeTypoScript($typoScriptConfiguration, $typoLinkConfiguration, $recordActionName);
 
 			// build the full link to the record
 			$generatedLink = $this->localContentObject->typoLink($linkText, $currentLinkConfigurationArray);
@@ -79,21 +84,21 @@ class Handler {
 	/**
 	 * Indicate that the requested link can be created or not.
 	 *
-	 * @param  string $recordTableName The name of database table
-	 * @param  array $typoScriptConfiguration Global defined TypoScript configuration for the linkHandler
-	 * @param  array $recordArray Requested record to link to it
+	 * @param string $recordActionName The name of configuration action
+	 * @param array $typoScriptConfiguration Global defined TypoScript cofiguration for the linkHandler
+	 * @param array $recordArray Requested record to link to it
 	 * @access protected
 	 * @return bool
 	 */
-	protected function isRecordLinkable($recordTableName, array $typoScriptConfiguration, array $recordArray) {
+	protected function isRecordLinkable($recordActionName, array $typoScriptConfiguration, array $recordArray) {
 		$isLinkable = FALSE;
 
 			// record type link configuration available
-		if (is_array($typoScriptConfiguration) && array_key_exists($recordTableName . '.', $typoScriptConfiguration)) {
+		if (is_array($typoScriptConfiguration) && array_key_exists($recordActionName . '.', $typoScriptConfiguration)) {
 			if (
 					(is_array($recordArray) && !empty($recordArray)) // record available
 				||
-					((int) $typoScriptConfiguration[$recordTableName . '.']['forceLink'] === 1) // if the record are hidden ore something else, force link generation
+					((int) $typoScriptConfiguration[$recordActionName . '.']['forceLink'] === 1) // if the record are hidden ore someting else, force link generation
 				) {
 				$isLinkable = TRUE;
 			}
@@ -156,24 +161,23 @@ class Handler {
 	/**
 	 * Merge all TypoScript for the typoLink from the global and local defined settings.
 	 *
-	 * @param  array $linkConfigurationArray Global defined TypoScript cofiguration for the linkHandler
-	 * @param  array $typoLinkConfigurationArray Local typolink TypoScript configuration for current link
-	 * @param  string $recordTableName The name of database table
+	 * @param array $linkConfigurationArray Global defined TypoScript cofiguration for the linkHandler
+	 * @param array $typoLinkConfigurationArray Local typolink TypoScript configuration for current link
+	 * @param string $recordActionName The name of database table
 	 * @access protected
 	 * @return array
 	 */
-	protected function mergeTypoScript(array $linkConfigurationArray , array $typoLinkConfigurationArray, $recordTableName) {
-
-			// pre-compile the "additionalParams"
-		$linkConfigurationArray[$recordTableName . '.']['additionalParams'] = $this->localContentObject->stdWrap($linkConfigurationArray[$recordTableName . '.']['additionalParams'], $linkConfigurationArray[$recordTableName . '.']['additionalParams.']);
-		unset($linkConfigurationArray[$recordTableName . '.']['additionalParams.']);
+	protected function mergeTypoScript(array $linkConfigurationArray , array $typoLinkConfigurationArray, $recordActionName) {
+			// precompile the "additionalParams"
+		$linkConfigurationArray[$recordActionName . '.']['additionalParams'] = $this->localContentObject->stdWrap($linkConfigurationArray[$recordActionName . '.']['additionalParams'], $linkConfigurationArray[$recordActionName . '.']['additionalParams.']);
+		unset($linkConfigurationArray[$recordActionName . '.']['additionalParams.']);
 
 			// merge recursive the "additionalParams" from "$typoScriptConfiguration" with the "$typoLinkConfigurationArray"
 		if ( array_key_exists('additionalParams', $typoLinkConfigurationArray) ) {
 			$typoLinkConfigurationArray['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl(
 				'',
 				\TYPO3\CMS\Core\Utility\GeneralUtility::array_merge_recursive_overrule(
-					\TYPO3\CMS\Core\Utility\GeneralUtility::explodeUrl2Array($linkConfigurationArray[$recordTableName . '.']['additionalParams']),
+					\TYPO3\CMS\Core\Utility\GeneralUtility::explodeUrl2Array($linkConfigurationArray[$recordActionName . '.']['additionalParams']),
 					\TYPO3\CMS\Core\Utility\GeneralUtility::explodeUrl2Array($typoLinkConfigurationArray['additionalParams'])
 				)
 			);
@@ -186,9 +190,9 @@ class Handler {
 			if (array_key_exists('parameter.', $typoLinkConfigurationArray)) {
 				unset($typoLinkConfigurationArray['parameter.']);
 			}
-			$linkConfigurationArray[$recordTableName . '.'] = array_merge($typoLinkConfigurationArray, $linkConfigurationArray[$recordTableName . '.']);
+			$linkConfigurationArray[$recordActionName . '.'] = array_merge($typoLinkConfigurationArray, $linkConfigurationArray[$recordActionName . '.']);
 		}
 
-		return $linkConfigurationArray[$recordTableName . '.'];
+		return $linkConfigurationArray[$recordActionName . '.'];
 	}
 }

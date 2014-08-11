@@ -89,12 +89,13 @@ class ElementBrowserRecordList extends \TYPO3\CMS\Backend\RecordList\ElementBrow
 
 		$title = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordTitle($table, $row, FALSE, TRUE);
 
+		$action = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('act');
 		if (@$this->browselistObj->mode === 'rte') {
 			//used in RTE mode:
-			$aOnClick = 'return link_spec(\'' . $this->linkHandler . ':' . $table . ':' . $uid . '\');';
+			$aOnClick = 'return link_spec(\'' . $this->linkHandler . ':' . $action . ':' . $table . ':' . $uid . '\');';
 		} else {
 			//used in wizard mode
-			$aOnClick = 'return link_folder(\'' . $this->linkHandler . ':' . $table . ':' . $uid . '\');';
+			$aOnClick = 'return link_folder(\'' . $this->linkHandler . ':' . $action . ':' . $table . ':' . $uid . '\');';
 		}
 
 		return '<a href="#" onclick="' . $aOnClick . '">' . $title . $currentImage . '</a>';
