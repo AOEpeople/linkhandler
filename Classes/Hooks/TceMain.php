@@ -106,7 +106,7 @@ class TceMain {
 
 				$linkParamValue = 'record:' . $table . ':' . $id;
 
-				$queryString = '&eID=linkhandlerPreview&linkParams=' . $linkParamValue . $wsPreviewValue;
+				$queryString = '&eID=linkhandlerPreview&linkParams=' . urlencode ($linkParamValue . $wsPreviewValue);
 				$languageParam = '&L=' . $recordArray['sys_language_uid'];
 				$queryString  .= $languageParam . '&authCode=' . \TYPO3\CMS\Core\Utility\GeneralUtility::stdAuthCode($linkParamValue . $wsPreviewValue . intval($recordArray['sys_language_uid']), '', 32);
 
