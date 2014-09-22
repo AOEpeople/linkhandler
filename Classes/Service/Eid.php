@@ -94,6 +94,7 @@ class Eid {
 	public function initialize() {
 		$authCode = (string) GeneralUtility::_GP('authCode');
 		$linkParams = GeneralUtility::_GP('linkParams');
+		$this->languageId = (int)GeneralUtility::_GP('L');
 
 		$this->validateAuthCode($authCode, $linkParams);
 
