@@ -186,7 +186,8 @@ class Handler {
 			if (array_key_exists('parameter.', $typoLinkConfigurationArray)) {
 				unset($typoLinkConfigurationArray['parameter.']);
 			}
-			$linkConfigurationArray[$recordTableName . '.'] = array_merge($linkConfigurationArray[$recordTableName . '.'], $typoLinkConfigurationArray);
+            // XXX: Switched. The global configuration array containing the actual parameter should overwrite the linkhandler parameter!!!
+            $linkConfigurationArray[$recordTableName . '.'] = array_merge($typoLinkConfigurationArray, $linkConfigurationArray[$recordTableName . '.']);
 		}
 
 		return $linkConfigurationArray[$recordTableName . '.'];
