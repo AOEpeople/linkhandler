@@ -102,14 +102,20 @@ class RecordTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView {
 				$arrCol = '<td></td>';
 			}
 			$addPassOnParams = $this->getaddPassOnParams();
-			$aOnClick = 'return jumpToUrl(\'' . $this->thisScript . '?act=' .
-				$GLOBALS['SOBE']->browser->act .
-				'&editorNo=' . $GLOBALS['SOBE']->browser->editorNo .
-				'&contentTypo3Language=' . $GLOBALS['SOBE']->browser->contentTypo3Language .
-				'&contentTypo3Charset=' . $GLOBALS['SOBE']->browser->contentTypo3Charset .
-				'&mode=' . $GLOBALS['SOBE']->browser->mode .
-				'&expandPage=' . $v['row']['uid'] .
-				$addPassOnParams . '\');';
+
+            if($this->browselistObj->thisConfig['tx_linkhandler.'][$this->browselistObj->act.'.']['listTables'] != 'pages') {
+                $aOnClick = 'return jumpToUrl(\'' . $this->thisScript . '?act=' .
+                $GLOBALS['SOBE']->browser->act .
+                '&editorNo=' . $GLOBALS['SOBE']->browser->editorNo .
+                '&contentTypo3Language=' . $GLOBALS['SOBE']->browser->contentTypo3Language .
+                '&contentTypo3Charset=' . $GLOBALS['SOBE']->browser->contentTypo3Charset .
+                '&mode=' . $GLOBALS['SOBE']->browser->mode .
+                '&expandPage=' . $v['row']['uid'] .
+                $addPassOnParams . '\');';
+            } else {
+                $aOnClick = 'return link_spec(\'record:pages:'.$v['row']['uid'].'\');';
+            }
+
 			$cEbullet = !$this->ext_isLinkable($v['row']['doktype'], $v['row']['uid']) ?
 						'<a href="#" onclick="' . htmlspecialchars($aOnClick) . '"><img' .
 						\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($GLOBALS['BACK_PATH'], 'gfx/ol/arrowbullet.gif', 'width="18" height="16"') .
