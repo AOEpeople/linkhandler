@@ -1,0 +1,19 @@
+{
+	"name" : "dmk/linkhandler",
+	"description" : "",
+	"version" : "2.0.dev",
+	"type" : "typo3-cms-extension",
+	"keywords" : ["TYPO3 CMS"],
+	"homepage" : "http://www.dmk-ebusiness.de/",
+	"license" : "GPL-2.0+",
+	"authors" : [
+		{
+			"name" : "Hannes Bochmann",
+			"email" : "hannes.bochmann@dmk-ebusiness.de",
+			"role" : "Developer"
+		}
+	],
+	"support": {
+		"email": "dev@dmk-ebusiness.de"
+	}
+}
