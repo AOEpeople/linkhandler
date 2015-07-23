@@ -168,14 +168,24 @@ class Handler {
 		$linkConfigurationArray[$recordTableName . '.']['additionalParams'] = $this->localContentObject->stdWrap($linkConfigurationArray[$recordTableName . '.']['additionalParams'], $linkConfigurationArray[$recordTableName . '.']['additionalParams.']);
 		unset($linkConfigurationArray[$recordTableName . '.']['additionalParams.']);
 
+        if (version_compare(TYPO3_version, '6.2.0', '<')) {
+            $mergeLinkConfigurationArray = TYPO3\CMS\Core\Utility\GeneralUtility::explodeUrl2Array($linkConfigurationArray[$recordTableName . '.']['additionalParams']);
+            \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule(
+                $mergeLinkConfigurationArray,
+                \TYPO3\CMS\Core\Utility\GeneralUtility::explodeUrl2Array($typoLinkConfigurationArray['additionalParams'])
+            );
+        } else {
+            $mergeLinkConfigurationArray = \TYPO3\CMS\Core\Utility\GeneralUtility::array_merge_recursive_overrule(
+                TYPO3\CMS\Core\Utility\GeneralUtility::explodeUrl2Array($linkConfigurationArray[$recordTableName . '.']['additionalParams']),
+                \TYPO3\CMS\Core\Utility\GeneralUtility::explodeUrl2Array($typoLinkConfigurationArray['additionalParams'])
+            );
+        }
+
 			// merge recursive the "additionalParams" from "$typoScriptConfiguration" with the "$typoLinkConfigurationArray"
 		if ( array_key_exists('additionalParams', $typoLinkConfigurationArray) ) {
 			$typoLinkConfigurationArray['additionalParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl(
 				'',
-				\TYPO3\CMS\Core\Utility\GeneralUtility::array_merge_recursive_overrule(
-					\TYPO3\CMS\Core\Utility\GeneralUtility::explodeUrl2Array($linkConfigurationArray[$recordTableName . '.']['additionalParams']),
-					\TYPO3\CMS\Core\Utility\GeneralUtility::explodeUrl2Array($typoLinkConfigurationArray['additionalParams'])
-				)
+				$mergeLinkConfigurationArray
 			);
 		}
 
