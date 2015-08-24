@@ -62,7 +62,8 @@ class Handler {
 
 			$this->localContentObject = clone $contentObjectRenderer;
 			$this->localContentObject->start($recordArray, '');
-			$typoScriptConfiguration[$recordTableName . '.']['parameter'] .= $additionalLinkParameters;
+			$typoScriptConfiguration[$recordTableName . '.']['parameter.']['postCObject'] = 'TEXT';
+			$typoScriptConfiguration[$recordTableName . '.']['parameter.']['postCObject.']['value']  .= $additionalLinkParameters;
 
 			$currentLinkConfigurationArray = $this->mergeTypoScript($typoScriptConfiguration, $typoLinkConfiguration, $recordTableName);
 
