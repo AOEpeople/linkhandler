@@ -1,0 +1,11 @@
+{
+    "name": "aoepople/linkhandler",
+    "description": "Enables user friendly links to records like tt_news etc... Configure new Tabs to the link-wizard. (by AOE GmbH)",
+    "type": "typo3-cms-extension",
+    "keywords": ["TYPO3 CMS", "RTE", "Links"],
+    "homepage": "https://forge.typo3.org/projects/extension-linkhandler",
+    "license": "GPL-2.0+",
+    "support": {
+        "issues": "https://forge.typo3.org/projects/extension-linkhandler/issues"
+    }
+}
