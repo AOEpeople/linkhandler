@@ -4,7 +4,7 @@ namespace AOE\Linkhandler\Record;
 /***************************************************************
  *  Copyright notice
  *
- *  Copyright (c) 2008, Daniel Pötzinger <daniel.poetzinger@aoemedia.de>
+ *  Copyright (c) 2008, Daniel Pötzinger <daniel.poetzinger@aoe.com>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,7 +27,7 @@ namespace AOE\Linkhandler\Record;
 /**
  * Extend ElementBrowserRecordList to fix linkWraps for RTE link browser
  *
- * @author Daniel Poetzinger (AOE media GmbH)
+ * @author Daniel Poetzinger (AOE GmbH)
  * @package Linkhandler
  */
 class ElementBrowserRecordList extends \TYPO3\CMS\Backend\RecordList\ElementBrowserRecordList {

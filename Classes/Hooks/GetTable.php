@@ -4,7 +4,7 @@ namespace AOE\Linkhandler\Hooks;
 /***************************************************************
  *  Copyright notice
  *
- *  Copyright (c) 2009, Michael Klapper <klapper@aoemedia.de>
+ *  Copyright (c) 2009, Michael Klapper <klapper@aoe.com>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,7 +27,7 @@ namespace AOE\Linkhandler\Hooks;
 /**
  * GetTable hook
  *
- * @author Michael Klapper <klapper@aoemedia.de>
+ * @author Michael Klapper <klapper@aoe.com>
  * @package Linkhandler
  */
 class GetTable implements \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface {

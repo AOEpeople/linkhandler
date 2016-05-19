@@ -6,39 +6,39 @@
 	* Heavily patched for TYPO3 6.0 compatibility.
 	* Commented out all code in ext_localconf.php related to older versions of TYPO3. This is better for performance.
 
-09-11-2009 Michael Klapper <michael.klapper@aoemedia.de>
+09-11-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Remove URL verification, just force "header" redirect because of problems if the requested pages is protected by HTTP authentication.
 
-09-11-2009 Michael Klapper <michael.klapper@aoemedia.de>
+09-11-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Keep attention on the languagevisibility XCLASS
 	* Change default value for "options.saveDocView.tt_news"
 
-03-11-2009 Michael Klapper <michael.klapper@aoemedia.de>
+03-11-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Make the t3lib_softrefproc XCLASS optional during the extension manager.
 	* Fixed bug #5199: Replace "t3lib_div::makeInstanceClassName()"
 
-02-11-2009 Michael Klapper <michael.klapper@aoemedia.de>
+02-11-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Add feature #5191: Provide XCLASS to enable bug fix #10827: Hide "Save and View"-button when editing a content-element
 	* Add some "conflicts" constraints to the ext_emconf.php
 	* Add support to add an XCLASS for alt_doc.php if allready an XCLASS exists.
 
-29-10-2009 Michael Klapper <michael.klapper@aoemedia.de>
+29-10-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Fixed Bug #3928: Referenced records won't show up in Refindex
 
-22-10-2009 Michael Klapper <michael.klapper@aoemedia.de>
+22-10-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Fixed Bug #5034: URL length of tab links causes errors in IE7
 
-21-10-2009 Michael Klapper <michael.klapper@aoemedia.de>
+21-10-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Fixed Bug #3926: Omit Overlay-Records within Linkhandler-DB List
 	* Fixed furhter link params in linkhandler link processing
 
-25-09-2009 Michael Klapper <michael.klapper@aoemedia.de>
+25-09-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Fixed Bug #4479: allow recursive onlyPids - Thanks to Stefano Cecere for providing the patch. 
 
-11-08-2009 Michael Klapper <michael.klapper@aoemedia.de>
+11-08-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Minnor code changes
 
-10-08-2009 Michael Klapper <michael.klapper@aoemedia.de>
+10-08-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Add some comments
 	* Update documentation
 	* Minnor code changes
@@ -48,60 +48,60 @@
 		noAttributesForm=1
 		linkClassName=footnote
 	
-07-08-2009 Michael Klapper <michael.klapper@aoemedia.de>
+07-08-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Fix bug #3784: Tabs in Linkview are jumping
 	* Add feature #4183: Add parameter overwriteHandler to the tab configuration
 	* Minnor code changes
 	* Add feature #4184: Show only the "onlyPids" configured pages in the pagetree
 
-03-08-2009 Michael Klapper <michael.klapper@aoemedia.de>
+03-08-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Minnor code changes
 	* Make the tx_linkhandler_handler::getCurrentRecord more robustness
 
-16-07-2009 Michael Klapper <michael.klapper@aoemedia.de>
+16-07-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Refactor the tx_linkhandler_handler
 
-16-07-2009 Michael Klapper <michael.klapper@aoemedia.de>
+16-07-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Minnor code changes 
 	* Add support for WS preview link generation
 	* Add support to view records from different language
 	* Increase version number
 	* Fix bug #3927: tx_linkhandler_handler should check for the l18n_parent and fix the recordRow
 
-12-07-2009 Michael Klapper <michael.klapper@aoemedia.de>
+12-07-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Optimize Feature #3414: Use linkhandler for backend record "view" button
 
-11-07-2009 Michael Klapper <michael.klapper@aoemedia.de>
+11-07-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Fix bug #3867: tslib_cObj::getTypoLink_URL - Return just empty string
 
-10-07-2009 Michael Klapper <michael.klapper@aoemedia.de>
+10-07-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Fix bug #3675: typolink.returnLast not working with record links?
 
-03-07-2009 Michael Klapper <michael.klapper@aoemedia.de>
+03-07-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Minor code change
 
-30-06-2009 Michael Klapper <michael.klapper@aoemedia.de>
+30-06-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Improve added feature #3800
 	* Minor code change
 	* Update documentation
 
-29-06-2009 Michael Klapper <michael.klapper@aoemedia.de>
+29-06-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Add Feature #3800: Change the "applyPatch" from ext_conf_template to version_compare in ext_localconf.php
 
-27-06-2009 Michael Klapper <michael.klapper@aoemedia.de>
+27-06-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Add Feature #3414: Use linkhandler for backend record "view" button
 
-05-06-2009 Michael Klapper <michael.klapper@aoemedia.de>
+05-06-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Fix bug #3452: link handler should respect blindLinkOptions configuration of TCA
 	* Minor code indention
 
-21-04-2009 Michael Klapper <michael.klapper@aoemedia.de>
+21-04-2009 Michael Klapper <michael.klapper@aoe.com>
 	* fix Bug #3143
 
-17-04-2009 Michael Klapper <michael.klapper@aoemedia.de>
+17-04-2009 Michael Klapper <michael.klapper@aoe.com>
 	* Update Documentation
 
-08-04-2009 Michael Klapper <michael.klapper@aoemedia.de>
+08-04-2009 Michael Klapper <michael.klapper@aoe.com>
 	* fix Bug #2626, #3057, #3058, #1488, #1244, #2675
 	* Add some PHPDoc
 	* Code indention
@@ -109,5 +109,5 @@
 23-01-2009 Stefano Cecere <stefano.cecere@krur.com>
 	* fix Bug #1342 (rtehtmlarea hook name has changed)
 
-07-09-17 Daniel Pötzinger  <poetzinger@aoemedia.de>
+07-09-17 Daniel Pötzinger  <poetzinger@aoe.com>
 	* Initial release
