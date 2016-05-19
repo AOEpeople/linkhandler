@@ -152,7 +152,7 @@ class Eid {
 		\TYPO3\CMS\Frontend\Utility\EidUtility::initTCA();
 
 		$pid = \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger(GeneralUtility::_GP('id'));
-		$GLOBALS['TSFE'] = GeneralUtility::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pid, 0, 0, 0);
+		$GLOBALS['TSFE'] = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController', $GLOBALS['TYPO3_CONF_VARS'], $pid, 0, 0, 0);
 
 		$GLOBALS['TSFE']->connectToDB();
 		$GLOBALS['TSFE']->initFEuser(); //!TODO first check if already a fe_user session exists - otherwise this line will overwrite the existing one
