@@ -144,7 +144,7 @@ class Eid {
 	}
 
 	/**
-	 * Initializes tslib_fe and sets it to $GLOBALS['TSFE']
+	 * Initializes \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController and sets it to $GLOBALS['TSFE']
 	 *
 	 * @return	void
 	 */
