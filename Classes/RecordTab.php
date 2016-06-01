@@ -208,7 +208,7 @@ class RecordTab implements \AOE\Linkhandler\TabHandlerInterface {
 			$dblist = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('AOE\Linkhandler\Record\ElementBrowserRecordList');
 			$dblist->setAddPassOnParameters($this->addPassOnParams);
 			$dblist->browselistObj = $this->browseLinksObj;
-			$dblist->this->pObjScript = $this->browseLinksObj->this->pObjScript;
+			$dblist->pObjScript = $this->browseLinksObj->pObjScript;
 			$dblist->backPath = $GLOBALS['BACK_PATH'];
 			$dblist->thumbs = 0;
 			$dblist->calcPerms = $GLOBALS['BE_USER']->calcPerms($pageinfo);
