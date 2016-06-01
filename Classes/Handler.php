@@ -197,7 +197,7 @@ class Handler {
 			if (array_key_exists('parameter.', $typoLinkConfigurationArray)) {
 				unset($typoLinkConfigurationArray['parameter.']);
 			}
-			$linkConfigurationArray[$recordTableName . '.'] = array_merge($linkConfigurationArray[$recordTableName . '.'], $typoLinkConfigurationArray);
+			$linkConfigurationArray[$recordTableName . '.'] = array_merge($typoLinkConfigurationArray, $linkConfigurationArray[$recordTableName . '.']);
 		}
 
 		return $linkConfigurationArray[$recordTableName . '.'];
