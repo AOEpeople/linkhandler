@@ -43,6 +43,11 @@ class ElementBrowserRecordList extends \TYPO3\CMS\Backend\RecordList\ElementBrow
 	protected $linkHandler = 'record';
 
 	/**
+	 * @var \TYPO3\CMS\Rtehtmlarea\BrowseLinks
+	 */
+	public $browselistObj;
+
+	/**
 	 * Set the parameters that should be added to the link, in order to keep the required vars for the linkwizard
 	 * @param string $addPassOnParameters
 	 * @return void
