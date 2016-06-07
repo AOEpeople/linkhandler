@@ -1,7 +1,7 @@
 <?php
 
-if (!defined ('TYPO3_MODE')) {
-	die ('Access denied.');
+if (!defined('TYPO3_MODE')) {
+    die ('Access denied.');
 }
 
 /** @todo move tt_news related code to a separate extension */

@@ -4,7 +4,7 @@ namespace AOE\Linkhandler;
 /***************************************************************
  *  Copyright notice
  *
- *  Copyright (c) 2008, Daniel Pötzinger <daniel.poetzinger@aoe.com>
+ *  Copyright (c) 2016, AOE GmbH <dev@aoe.com>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,41 +25,50 @@ namespace AOE\Linkhandler;
  ***************************************************************/
 
 /**
- * Tabhandler interface
+ * Interface TabHandlerInterface
  *
- * @author Daniel Poetzinger (AOE GmbH)
- * @package Linkhandler
+ * @package AOE\Linkhandler
  */
-interface TabHandlerInterface {
+interface TabHandlerInterface
+{
 
-	/**
-	 * Constructor for the tabHandler. Normally used to sets some internal vars
-	 *
-	 * @param \TYPO3\CMS\Recordlist\Browser\ElementBrowser $browseLinksObj
-	 * @param string $addPassOnParams
-	 * @param array $configuration
-	 * @param string $currentLinkValue
-	 * @param bool $isRte
-	 * @param int $currentPid
-	 */
-	public function __construct(\TYPO3\CMS\Recordlist\Browser\ElementBrowser $browseLinksObj, $addPassOnParams, $configuration, $currentLinkValue, $isRte, $currentPid);
+    /**
+     * Constructor for the tabHandler. Normally used to sets some internal vars
+     *
+     * @param \TYPO3\CMS\Recordlist\Browser\ElementBrowser $browseLinksObj
+     * @param string $addPassOnParams
+     * @param array $configuration
+     * @param string $currentLinkValue
+     * @param bool $isRte
+     * @param int $currentPid
+     */
+    public function __construct(
+        \TYPO3\CMS\Recordlist\Browser\ElementBrowser $browseLinksObj,
+        $addPassOnParams,
+        $configuration,
+        $currentLinkValue,
+        $isRte,
+        $currentPid
+    );
 
-	/**
-	 * should return the correct info array that is required for the link wizard.
-	 * It should detect if the current value is a link where this tabHandler should be responsible.
-	 * else it should return a emty array
-	 *
-	 * @param string $href
-	 * @param array $tabsConfig
-	 * @return array
-	 */
-	static public function getLinkBrowserInfoArray($href, $tabsConfig);
+    /**
+     * should return the correct info array that is required for the link wizard.
+     * It should detect if the current value is a link where this tabHandler should be responsible.
+     * else it should return a emty array
+     *
+     * @param string $href
+     * @param array $tabsConfig
+     *
+     * @return array
+     */
+    static public function getLinkBrowserInfoArray($href, $tabsConfig);
 
-	/**
-	 * returns a new tab for the browse links wizard
-	 *
-	 * @param string current link selector action
-	 * @return string a tab for the selected link action
-	 */
-	public function getTabContent();
+    /**
+     * returns a new tab for the browse links wizard
+     *
+     * @param string current link selector action
+     *
+     * @return string a tab for the selected link action
+     */
+    public function getTabContent();
 }

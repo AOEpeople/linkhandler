@@ -4,7 +4,7 @@ namespace AOE\Linkhandler;
 /***************************************************************
  *  Copyright notice
  *
- *  Copyright (c) 2008, Daniel Pötzinger <daniel.poetzinger@aoe.com>
+ *  Copyright (c) 2016, AOE GmbH <dev@aoe.com>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,230 +25,260 @@ namespace AOE\Linkhandler;
  ***************************************************************/
 
 /**
- * hook to adjust linkwizard (linkbrowser)
+ * Class RecordTab
  *
- * @author Daniel Poetzinger (AOE GmbH)
- * @package Linkhandler
+ * @package AOE\Linkhandler
  */
-class RecordTab implements \AOE\Linkhandler\TabHandlerInterface {
+class RecordTab implements \AOE\Linkhandler\TabHandlerInterface
+{
 
-	/**
-	 * @var bool
-	 */
-	protected $isRte;
+    /**
+     * @var bool
+     */
+    protected $isRte;
 
-	/**
-	 * @var \TYPO3\CMS\Rtehtmlarea\BrowseLinks
-	 */
-	protected $browseLinksObj;
+    /**
+     * @var \TYPO3\CMS\Rtehtmlarea\BrowseLinks
+     */
+    protected $browseLinksObj;
 
-	/**
-	 * @var array
-	 */
-	protected $configuration;
+    /**
+     * @var array
+     */
+    protected $configuration;
 
-	/**
-	 * Initialize the class
-	 *
-	 * @param \TYPO3\CMS\Recordlist\Browser\ElementBrowser $browseLinksObj
-	 * @param string $addPassOnParams
-	 * @param array $configuration
-	 * @param string $currentLinkValue
-	 * @param bool $isRte
-	 * @param int $currentPid
-	 */
-	public function __construct(\TYPO3\CMS\Recordlist\Browser\ElementBrowser $browseLinksObj, $addPassOnParams, $configuration, $currentLinkValue, $isRte, $currentPid) {
-		$environment = '';
-		$this->browseLinksObj = $browseLinksObj;
+    /**
+     * Initialize the class
+     *
+     * @param \TYPO3\CMS\Recordlist\Browser\ElementBrowser $browseLinksObj
+     * @param string $addPassOnParams
+     * @param array $configuration
+     * @param string $currentLinkValue
+     * @param bool $isRte
+     * @param int $currentPid
+     */
+    public function __construct(
+        \TYPO3\CMS\Recordlist\Browser\ElementBrowser $browseLinksObj,
+        $addPassOnParams,
+        $configuration,
+        $currentLinkValue,
+        $isRte,
+        $currentPid
+    ) {
+        $environment = '';
+        $this->browseLinksObj = $browseLinksObj;
 
-			// first step to refactoring (no dependenciy to $browseLinksObj), make the required methodcalls known in membervariables
-		$this->isRte = $isRte;
-		$this->expandPage = $browseLinksObj->expandPage;
-		$this->configuration = $configuration;
-		$this->pointer = $browseLinksObj->pointer;
+        // first step to refactoring (no dependenciy to $browseLinksObj), make the required methodcalls known in membervariables
+        $this->isRte = $isRte;
+        $this->expandPage = $browseLinksObj->expandPage;
+        $this->configuration = $configuration;
+        $this->pointer = $browseLinksObj->pointer;
 
-		if (is_array(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('P'))) {
-			$environment = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('P', \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('P'));
-		}
+        if (is_array(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('P'))) {
+            $environment = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl(
+                'P',
+                \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('P')
+            );
+        }
 
-		$this->addPassOnParams = $addPassOnParams . $environment;
-	}
+        $this->addPassOnParams = $addPassOnParams . $environment;
+    }
 
-	/**
-	 * Interface function. should return the correct info array that is required for the link wizard.
-	 * It should detect if the current value is a link where this tabHandler should be responsible.
-	 * else it should return a empty array
-	 *
-	 * @param string $href
-	 * @param array $tabsConfig
-	 * @static
-	 * @return array
-	 */
-	static public function getLinkBrowserInfoArray($href, $tabsConfig) {
-		$info = array();
-		list($currentHandler, $table, $uid) = explode(':', $href);
+    /**
+     * Interface function. should return the correct info array that is required for the link wizard.
+     * It should detect if the current value is a link where this tabHandler should be responsible.
+     * else it should return a empty array
+     *
+     * @param string $href
+     * @param array $tabsConfig
+     *
+     * @static
+     * @return array
+     */
+    public static function getLinkBrowserInfoArray($href, $tabsConfig)
+    {
+        $info = array();
+        list($currentHandler, $table, $uid) = explode(':', $href);
 
-			// check the linkhandler TSConfig and find out  which config is responsible for the current table:
-		foreach ($tabsConfig as $key => $tabConfig) {
+        // check the linkhandler TSConfig and find out  which config is responsible for the current table:
+        foreach ($tabsConfig as $key => $tabConfig) {
+            if ($currentHandler == 'record' || $currentHandler == $tabConfig['overwriteHandler']) {
+                if ($table == $tabConfig['listTables']) {
+                    $info['act'] = $key;
+                }
+            }
+        }
 
-			if ($currentHandler == 'record' || $currentHandler == $tabConfig['overwriteHandler']) {
-				if ($table == $tabConfig['listTables']) {
-					$info['act'] = $key;
-				}
-			}
-		}
+        $info['recordTable'] = $table;
+        $info['recordUid'] = $uid;
 
-		$info['recordTable'] = $table;
-		$info['recordUid'] = $uid;
+        return $info;
+    }
 
-		return $info;
-	}
+    /**
+     * Build the content of an tab
+     *
+     * @return    string a tab for the selected link action
+     */
+    public function getTabContent()
+    {
+        $content = '';
+        if ($this->isRte) {
+            if (!$this->configuration['noAttributesForm']) {
+                $content .= $this->browseLinksObj->addAttributesForm();
+            } elseif (
+                array_key_exists('linkClassName', $this->configuration)
+                && $this->configuration['linkClassName'] != ''
+            ) {
+                $content .= $this->addDummyAttributesForm($this->configuration['linkClassName']);
+            }
+        }
 
-	/**
-	 * Build the content of an tab
-	 *
-	 * @return	string a tab for the selected link action
-	 */
-	public function getTabContent() {
-		$content = '';
-		if ($this->isRte) {
-			if (!$this->configuration['noAttributesForm']) {
-				$content .= $this->browseLinksObj->addAttributesForm();
-			} elseif (array_key_exists('linkClassName', $this->configuration) && $this->configuration['linkClassName'] != '') {
-				$content .= $this->addDummyAttributesForm($this->configuration['linkClassName']);
-			}
-		}
-
-		/** @var \AOE\Linkhandler\Record\RecordTree $pagetree*/
-		$pagetree = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('AOE\Linkhandler\Record\RecordTree');
-		/** Initialize page tree, @see \TYPO3\CMS\Backend\Tree\View\AbstractTreeView */
-		$pagetree->init();
-		$pagetree->browselistObj = $this->browseLinksObj;
-		if (array_key_exists('onlyPids', $this->configuration) && $this->configuration['onlyPids'] != '') {
-			$pagetree->expandAll = TRUE;
+        /** @var \AOE\Linkhandler\Record\RecordTree $pagetree */
+        $pagetree = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('AOE\Linkhandler\Record\RecordTree');
+        /** Initialize page tree, @see \TYPO3\CMS\Backend\Tree\View\AbstractTreeView */
+        $pagetree->init();
+        $pagetree->browselistObj = $this->browseLinksObj;
+        if (array_key_exists('onlyPids', $this->configuration) && $this->configuration['onlyPids'] != '') {
+            $pagetree->expandAll = true;
             $pagetree->expandFirst = 1;
-		}
+        }
 
-		$tree = $pagetree->getBrowsableTree();
-		$cElements = $this->expandPageRecords();
-		$content .= '
-		<!--
-			Wrapper table for page tree / record list:
-		-->
-				<table border="0" cellpadding="0" cellspacing="0" id="typo3-linkPages">
-					<tr>
-						<td class="c-wCell" valign="top">' . $this->browseLinksObj->barheader($GLOBALS['LANG']->getLL('pageTree') . ':') . $tree . '</td>
-						<td class="c-wCell" valign="top">' . $cElements . '</td>
-					</tr>
-				</table>
-				';
+        $tree = $pagetree->getBrowsableTree();
+        $cElements = $this->expandPageRecords();
+        $content .= '
+        <!--
+            Wrapper table for page tree / record list:
+        -->
+                <table border="0" cellpadding="0" cellspacing="0" id="typo3-linkPages">
+                    <tr>
+                        <td class="c-wCell" valign="top">' . $this->browseLinksObj->barheader($GLOBALS['LANG']->getLL('pageTree') . ':') . $tree . '</td>
+                        <td class="c-wCell" valign="top">' . $cElements . '</td>
+                    </tr>
+                </table>
+                ';
 
-		return $content;
-	}
+        return $content;
+    }
 
-	/**
-	 * For RTE: This displays all content elements on a page and lets you create a link to the element.
-	 *
-	 * @return	string HTML output. Returns content only if the ->expandPage value is set (pointing to a page uid to show tt_content records from ...)
-	 */
-	protected function expandPageRecords() {
-		$out = '';
+    /**
+     * For RTE: This displays all content elements on a page and lets you create a link to the element.
+     *
+     * @return string HTML output. Returns content only if the ->expandPage value is set (pointing to a page uid to show tt_content records from ...)
+     */
+    protected function expandPageRecords()
+    {
+        $out = '';
 
-		if (
-			$this->expandPage >= 0 &&
-			\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->expandPage) &&
-			$GLOBALS['BE_USER']->isInWebMount($this->expandPage)
-		) {
-			$tables = '*';
+        if (
+            $this->expandPage >= 0
+            && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->expandPage)
+            && $GLOBALS['BE_USER']->isInWebMount($this->expandPage)
+        ) {
+            $tables = '*';
 
-			if (isset($this->configuration['listTables'])) {
-				$tables = $this->configuration['listTables'];
-			}
-				// Set array with table names to list:
-			if (!strcmp(trim($tables), '*')) {
-				$tablesArr = array_keys($GLOBALS['TCA']);
-			} else {
-				$tablesArr = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $tables, 1);
-			}
-			reset($tablesArr);
+            if (isset($this->configuration['listTables'])) {
+                $tables = $this->configuration['listTables'];
+            }
+            // Set array with table names to list:
+            if (!strcmp(trim($tables), '*')) {
+                $tablesArr = array_keys($GLOBALS['TCA']);
+            } else {
+                $tablesArr = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $tables, 1);
+            }
+            reset($tablesArr);
 
-				// Headline for selecting records:
-			$out .= $this->browseLinksObj->barheader($GLOBALS['LANG']->getLL('selectRecords') . ':');
+            // Headline for selecting records:
+            $out .= $this->browseLinksObj->barheader($GLOBALS['LANG']->getLL('selectRecords') . ':');
 
-				// Create the header, showing the current page for which the listing is. Includes link to the page itself, if pages are amount allowed tables.
-			$titleLen = intval($GLOBALS['BE_USER']->uc['titleLen']);
-			$mainPageRec = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordWSOL('pages', $this->expandPage);
-			$aTag = '';
-			$aTagEnd = '';
-			$aTag2 = '';
-			if (in_array('pages', $tablesArr)) {
-				$ficon = \TYPO3\CMS\Backend\Utility\IconUtility::getIcon('pages', $mainPageRec);
-				$aTag = "<a href=\"#\" onclick=\"return insertElement('pages', '" . $mainPageRec['uid'] . "', 'db', " .
-					\TYPO3\CMS\Core\Utility\GeneralUtility::quoteJSvalue($mainPageRec['title']) .
-					", '', '', '" . $ficon . "', '',1);\">";
-				$aTag2 = "<a href=\"#\" onclick=\"return insertElement('pages', '" . $mainPageRec['uid'] . "', 'db', " .
-					\TYPO3\CMS\Core\Utility\GeneralUtility::quoteJSvalue($mainPageRec['title']) .
-					", '', '', '" . $ficon . "', '',0);\">";
-				$aTagEnd = '</a>';
-			}
-			$picon = \TYPO3\CMS\Backend\Utility\IconUtility::getIconImage('pages', $mainPageRec, $GLOBALS['BACK_PATH'], '');
-			$pBicon = $aTag2 ? '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg($GLOBALS['BACK_PATH'], 'gfx/plusbullet2.gif','width="18" height="16"') . ' alt="" />' : '';
-			$pText = htmlspecialchars(\TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($mainPageRec['title'], $titleLen));
-			$out .= $picon . $aTag2 . $pBicon . $aTagEnd . $aTag . $pText . $aTagEnd . '<br />';
+            // Create the header, showing the current page for which the listing is. Includes link to the page itself, if pages are amount allowed tables.
+            $titleLen = intval($GLOBALS['BE_USER']->uc['titleLen']);
+            $mainPageRec = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordWSOL('pages', $this->expandPage);
+            $aTag = '';
+            $aTagEnd = '';
+            $aTag2 = '';
+            if (in_array('pages', $tablesArr)) {
+                $ficon = \TYPO3\CMS\Backend\Utility\IconUtility::getIcon('pages', $mainPageRec);
+                $aTag = "<a href=\"#\" onclick=\"return insertElement('pages', '" . $mainPageRec['uid'] . "', 'db', " .
+                    \TYPO3\CMS\Core\Utility\GeneralUtility::quoteJSvalue($mainPageRec['title']) .
+                    ", '', '', '" . $ficon . "', '',1);\">";
+                $aTag2 = "<a href=\"#\" onclick=\"return insertElement('pages', '" . $mainPageRec['uid'] . "', 'db', " .
+                    \TYPO3\CMS\Core\Utility\GeneralUtility::quoteJSvalue($mainPageRec['title']) .
+                    ", '', '', '" . $ficon . "', '',0);\">";
+                $aTagEnd = '</a>';
+            }
+            $picon = \TYPO3\CMS\Backend\Utility\IconUtility::getIconImage(
+                'pages',
+                $mainPageRec,
+                $GLOBALS['BACK_PATH'],
+                ''
+            );
+            $pBicon = $aTag2 ? '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg($GLOBALS['BACK_PATH'],
+                    'gfx/plusbullet2.gif', 'width="18" height="16"') . ' alt="" />' : '';
+            $pText = htmlspecialchars(
+                \TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($mainPageRec['title'], $titleLen)
+            );
+            $out .= $picon . $aTag2 . $pBicon . $aTagEnd . $aTag . $pText . $aTagEnd . '<br />';
 
-				// Initialize the record listing:
-			$id = $this->expandPage;
-			$pointer = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->pointer, 0, 100000);
-			$pagePermsClause = $GLOBALS['BE_USER']->getPagePermsClause(1);
-			$pageinfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($id, $pagePermsClause);
+            // Initialize the record listing:
+            $id = $this->expandPage;
+            $pointer = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->pointer, 0, 100000);
+            $pagePermsClause = $GLOBALS['BE_USER']->getPagePermsClause(1);
+            $pageinfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($id, $pagePermsClause);
 
-				// Generate the record list:
-				// unfortunately we have to set weird dependencies.
-			/** @var \AOE\Linkhandler\Record\ElementBrowserRecordList $dblist */
-			$dblist = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('AOE\Linkhandler\Record\ElementBrowserRecordList');
-			$dblist->setAddPassOnParameters($this->addPassOnParams);
-			$dblist->browselistObj = $this->browseLinksObj;
-			$dblist->thisScript = $this->browseLinksObj->thisScript;
-			$dblist->backPath = $GLOBALS['BACK_PATH'];
-			$dblist->thumbs = 0;
-			$dblist->calcPerms = $GLOBALS['BE_USER']->calcPerms($pageinfo);
-			$dblist->noControlPanels = 1;
-			$dblist->clickMenuEnabled = 0;
-			$dblist->tableList = implode(',', $tablesArr);
+            // Generate the record list:
+            // unfortunately we have to set weird dependencies.
+            /** @var \AOE\Linkhandler\Record\ElementBrowserRecordList $dblist */
+            $dblist = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('AOE\Linkhandler\Record\ElementBrowserRecordList');
+            $dblist->setAddPassOnParameters($this->addPassOnParams);
+            $dblist->browselistObj = $this->browseLinksObj;
+            $dblist->thisScript = $this->browseLinksObj->thisScript;
+            $dblist->backPath = $GLOBALS['BACK_PATH'];
+            $dblist->thumbs = 0;
+            $dblist->calcPerms = $GLOBALS['BE_USER']->calcPerms($pageinfo);
+            $dblist->noControlPanels = 1;
+            $dblist->clickMenuEnabled = 0;
+            $dblist->tableList = implode(',', $tablesArr);
 
-			if (array_key_exists('overwriteHandler', $this->configuration)) {
-				$dblist->setOverwriteLinkHandler($this->configuration['overwriteHandler']);
-			}
+            if (array_key_exists('overwriteHandler', $this->configuration)) {
+                $dblist->setOverwriteLinkHandler($this->configuration['overwriteHandler']);
+            }
 
-			$dblist->start($id, \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('table'), $pointer,
-				\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('search_field'),
-				\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('search_levels'),
-				\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('showLimit')
-			);
+            $dblist->start(
+                $id,
+                \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('table'),
+                $pointer,
+                \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('search_field'),
+                \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('search_levels'),
+                \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('showLimit')
+            );
 
-			$dblist->setDispFields();
-			$dblist->generateList();
-			$dblist->writeBottom();
+            $dblist->setDispFields();
+            $dblist->generateList();
+            $dblist->writeBottom();
 
-				//	Add the HTML for the record list to output variable:
-			$out .= $dblist->HTMLcode;
-			$out .= $dblist->getSearchBox();
-		}
+            // Add the HTML for the record list to output variable:
+            $out .= $dblist->HTMLcode;
+            $out .= $dblist->getSearchBox();
+        }
 
-		return $out;
-	}
+        return $out;
+    }
 
-	/**
-	* Returns a form element with the typical elements that are present in the RTE attributesForm, but all fields are hidden.
-	* This can be used to force a certain classname etc for the link
-	 *
-	* @param string $className classname
-	* @return string The HTML of the Form
-	*/
-	protected  function addDummyAttributesForm($className = '') {
-		$formTag = '<form id="ltargetform" name="ltargetform">' .
-			'	<input type="hidden" name="anchor_class" value="' . $className . '">' .
-			'	</form>';
-		return $formTag;
-	}
+    /**
+     * Returns a form element with the typical elements that are present in the RTE attributesForm, but all fields are hidden.
+     * This can be used to force a certain classname etc for the link
+     *
+     * @param string $className classname
+     *
+     * @return string The HTML of the Form
+     */
+    protected function addDummyAttributesForm($className = '')
+    {
+        $formTag = '<form id="ltargetform" name="ltargetform">' .
+            '    <input type="hidden" name="anchor_class" value="' . $className . '">' .
+            '    </form>';
+
+        return $formTag;
+    }
 }

@@ -1,11 +1,10 @@
 <?php
-
 namespace AOE\Linkhandler\Hooks;
 
 /***************************************************************
  *  Copyright notice
  *
- *  Copyright (c) 2009, AOE GmbH <dev@aoe.com>
+ *  Copyright (c) 2016, AOE GmbH <dev@aoe.com>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -31,30 +30,39 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Class BackendUtility
  *
  * @package AOE\Linkhandler\Hooks
- * @author  Chetan Thapliyal <chetan.thapliyal@aoe.com>
  */
-class BackendUtility {
+class BackendUtility
+{
 
-	/**
-	 * Restores link handler generated preview link on save-n-preview event. This link is overwritten by the workspace module.
-	 *
-	 * @param  integer $pageUid
-	 * @param  string  $backPath
-	 * @param  array   $rootLine
-	 * @param  string  $anchorSection
-	 * @param  string  $viewScript
-	 * @param  array   $additionalGetVars
-	 * @param  boolean $switchFocus
-	 */
-	public function preProcess($pageUid, $backPath, $rootLine, $anchorSection, &$viewScript, $additionalGetVars, $switchFocus) {
-		if ($GLOBALS['BE_USER']->workspace != 0) {
-			$additionalGetVars = GeneralUtility::explodeUrl2Array($additionalGetVars);
+    /**
+     * Restores link handler generated preview link on save-n-preview event. This link is overwritten by the workspace module.
+     *
+     * @param  integer $pageUid
+     * @param  string $backPath
+     * @param  array $rootLine
+     * @param  string $anchorSection
+     * @param  string $viewScript
+     * @param  array $additionalGetVars
+     * @param  boolean $switchFocus
+     */
+    public function preProcess(
+        $pageUid,
+        $backPath,
+        $rootLine,
+        $anchorSection,
+        &$viewScript,
+        $additionalGetVars,
+        $switchFocus
+    ) {
+        if ($GLOBALS['BE_USER']->workspace != 0) {
+            $additionalGetVars = GeneralUtility::explodeUrl2Array($additionalGetVars);
 
-			if (isset($additionalGetVars['eID'])
-				&& ($additionalGetVars['eID'] === 'linkhandlerPreview')
-				&& isset($GLOBALS['_POST']['viewUrl'])) {
-				$viewScript = $GLOBALS['_POST']['viewUrl'];
-			}
-		}
-	}
-} 
+            if (isset($additionalGetVars['eID'])
+                && ($additionalGetVars['eID'] === 'linkhandlerPreview')
+                && isset($GLOBALS['_POST']['viewUrl'])
+            ) {
+                $viewScript = $GLOBALS['_POST']['viewUrl'];
+            }
+        }
+    }
+}
