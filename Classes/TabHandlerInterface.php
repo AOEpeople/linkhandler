@@ -54,14 +54,14 @@ interface TabHandlerInterface
     /**
      * should return the correct info array that is required for the link wizard.
      * It should detect if the current value is a link where this tabHandler should be responsible.
-     * else it should return a emty array
+     * else it should return a empty array
      *
      * @param string $href
      * @param array $tabsConfig
      *
      * @return array
      */
-    static public function getLinkBrowserInfoArray($href, $tabsConfig);
+    public static function getLinkBrowserInfoArray($href, $tabsConfig);
 
     /**
      * returns a new tab for the browse links wizard

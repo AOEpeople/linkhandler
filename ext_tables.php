@@ -1,7 +1,7 @@
 <?php
 
 if (!defined('TYPO3_MODE')) {
-    die ('Access denied.');
+    die('Access denied.');
 }
 
 /** @todo move tt_news related code to a separate extension */
@@ -9,7 +9,7 @@ if (!defined('TYPO3_MODE')) {
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Linkhandler');
 
 // hide the button saveDocView for tt_news categories
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSconfig('
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('
 	options.saveDocView.tt_news = 1
 ');
 

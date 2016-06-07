@@ -138,7 +138,8 @@ class RecordTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
                 <tr class="' . $bgColorClass . '">
                     <td nowrap="nowrap"' . ($v['row']['_CSSCLASS'] ? ' class="' . $v['row']['_CSSCLASS'] . '"' : '') . '>' .
                 $v['HTML'] .
-                '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' . $this->getTitleStr($v['row'],
+                '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' . $this->getTitleStr(
+                    $v['row'],
                     $titleLen) . '</a>' .
                 '</td>' .
                 $arrCol .

@@ -49,8 +49,7 @@ class TceMain
             $settingFound = false;
             $currentPageId = \TYPO3\CMS\Core\Utility\MathUtility::convertToPositiveInteger($GLOBALS['_POST']['popViewId']);
             $rootPageData = $this->getRootPage($currentPageId);
-            $defaultPageId = (isset($rootPageData) && array_key_exists('uid',
-                    $rootPageData)) ? $rootPageData['uid'] : $currentPageId;
+            $defaultPageId = (isset($rootPageData) && array_key_exists('uid', $rootPageData)) ? $rootPageData['uid'] : $currentPageId;
 
             $pagesTsConfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getPagesTSconfig($currentPageId);
             $handlerConfigurationStruct = $pagesTsConfig['mod.']['tx_linkhandler.'];
@@ -65,8 +64,7 @@ class TceMain
             }
 
             if ($settingFound) {
-                $l18nPointer = (array_key_exists('transOrigPointerField',
-                    $GLOBALS['TCA'][$table]['ctrl'])) ? $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'] : '';
+                $l18nPointer = (array_key_exists('transOrigPointerField', $GLOBALS['TCA'][$table]['ctrl'])) ? $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'] : '';
                 if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($id)) {
                     $id = $pObj->substNEWwithIDs[$id];
                 }
@@ -156,5 +154,4 @@ class TceMain
 
         return $rootPageData;
     }
-
 }

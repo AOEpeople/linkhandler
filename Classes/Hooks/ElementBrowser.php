@@ -65,7 +65,7 @@ class ElementBrowser implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserHoo
             $this->blindLinkOptions = $this->pObj->P['params']['blindLinkOptions'];
         }
 
-        $this->_checkConfigAndGetDefault();
+        $this->checkConfigAndGetDefault();
         $tabs = $this->getTabsConfig();
         foreach ($tabs as $key => $tabConfig) {
             if ($this->isRTE()) {
@@ -117,19 +117,19 @@ class ElementBrowser implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserHoo
      */
     public function getTab($act)
     {
-        if (!$this->_isOneOfLinkhandlerTabs($act)) {
+        if (!$this->isOneOfLinkhandlerTabs($act)) {
             return false;
         }
 
         if ($this->isRTE()) {
             if (isset($this->pObj->classesAnchorJSOptions)) {
-                // works for 4.1.x patch, in 4.2 they make this property protected! -> to enable classselector in 4.2 easoiest is to path rte.
+                // works for 4.1.x patch, in 4.2 they make this property protected! -> to enable classselector in 4.2 easiest is to path rte.
                 $this->pObj->classesAnchorJSOptions[$act] = @$this->pObj->classesAnchorJSOptions['page'];
             }
         }
 
         $configuration = $this->getTabConfig($act);
-        // get current href value (diffrent for RTE and normal browselinks)
+        // get current href value (different for RTE and normal browselinks)
         if ($this->isRTE()) {
             $currentValue = $this->pObj->curUrlInfo['value'];
         } else {
@@ -179,7 +179,7 @@ class ElementBrowser implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserHoo
      * @param string $siteUrl
      * @param array $info Current info array.
      *
-     * @return array $info a infoarray for browser to tell them what is current active tab
+     * @return array $info a info array for browser to tell them what is current active tab
      */
     public function parseCurrentUrl($href, $siteUrl, $info)
     {
@@ -275,11 +275,11 @@ class ElementBrowser implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserHoo
      * TSConfig key mod.tx_linkhandler.
      * (in case the hook is called from a RTE, this configuration might exist because it is configured in RTE.defaul.tx_linkhandler)
      * In mode RTE: the parameter RTEtsConfigParams have to exist
-     * In mode WIzard: the parameter P[pid] have to exist
+     * In mode Wizard: the parameter P[pid] have to exist
      *
      * @return void
      */
-    private function _checkConfigAndGetDefault()
+    private function checkConfigAndGetDefault()
     {
 
         if ($this->pObj->mode == 'rte') {
@@ -335,6 +335,10 @@ class ElementBrowser implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserHoo
 
     /**
      * returns config for a single tab
+     *
+     * @param string $tabKey
+     *
+     * @return string
      */
     private function getTabConfig($tabKey)
     {
@@ -372,7 +376,7 @@ class ElementBrowser implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserHoo
      *
      * @return bool
      */
-    private function _isOneOfLinkhandlerTabs($key)
+    private function isOneOfLinkhandlerTabs($key)
     {
         foreach ($this->pObj->thisConfig['tx_linkhandler.'] as $name => $tabConfig) {
             if (is_array($tabConfig)) {

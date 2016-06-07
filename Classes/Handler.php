@@ -177,7 +177,7 @@ class Handler
     /**
      * Merge all TypoScript for the typoLink from the global and local defined settings.
      *
-     * @param  array $linkConfigurationArray Global defined TypoScript cofiguration for the linkHandler
+     * @param  array $linkConfigurationArray Global defined TypoScript configuration for the linkHandler
      * @param  array $typoLinkConfigurationArray Local typolink TypoScript configuration for current link
      * @param  string $recordTableName The name of database table
      *
