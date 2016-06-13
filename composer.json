@@ -1,7 +1,7 @@
 {
   "name": "aoe/linkhandler",
   "description": "Enables user friendly links to records like tt_news etc... Configure new Tabs to the link-wizard. (by AOE GmbH)",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "keywords": ["TYPO3 CMS", "Linkhandler"],
   "homepage": "https://github.com/AOEpeople/linkhandler",
   "type": "typo3-cms-extension",
