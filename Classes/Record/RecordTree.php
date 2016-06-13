@@ -193,11 +193,15 @@ class RecordTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
      */
     public function PM_ATagWrap($icon, $cmd, $bMark = '')
     {
+        if (!$this->thisScript) {
+            return $icon;
+        }
+
         if ($bMark) {
             $anchor = '#' . $bMark;
             $name = ' name="' . $bMark . '"';
         }
-        $aOnClick = "return jumpToUrl('" . $this->thisScript . '?PM=' . $cmd . $this->getaddPassOnParams() . "','" . $anchor . "');";
+        $aOnClick = "return jumpToUrl('" . $this->getThisScript() . '?PM=' . $cmd . $this->getaddPassOnParams() . "','" . $anchor . "');";
 
         return '<a href="#"' . $name . ' onclick="' . htmlspecialchars($aOnClick) . '">' . $icon . '</a>';
     }
