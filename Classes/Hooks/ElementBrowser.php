@@ -88,7 +88,7 @@ class ElementBrowser implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserHoo
         $tabs = $this->getTabsConfig();
         foreach ($tabs as $key => $tabConfig) {
             $menuDefinition[$key]['isActive'] = $this->pObj->act == $key;
-            $menuDefinition[$key]['label'] = $tabConfig['label'];
+            $menuDefinition[$key]['label'] = $GLOBALS['LANG']->sL($tabConfig['label']);
             $menuDefinition[$key]['url'] = '#';
             $addPassOnParams = $this->getaddPassOnParams();
             $addPassOnParams = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl(
