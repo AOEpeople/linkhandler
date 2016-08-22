@@ -108,8 +108,10 @@ class RecordTab implements \AOE\Linkhandler\TabHandlerInterface
             }
         }
 
-        $info['recordTable'] = $table;
-        $info['recordUid'] = $uid;
+        if (!empty($info)) {
+            $info['recordTable'] = $table;
+            $info['recordUid'] = $uid;
+        }
 
         return $info;
     }
