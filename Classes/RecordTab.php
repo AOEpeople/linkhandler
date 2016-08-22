@@ -102,7 +102,7 @@ class RecordTab implements \AOE\Linkhandler\TabHandlerInterface
         // check the linkhandler TSConfig and find out  which config is responsible for the current table:
         foreach ($tabsConfig as $key => $tabConfig) {
             if ($currentHandler == 'record' || $currentHandler == $tabConfig['overwriteHandler']) {
-                if ($table == $tabConfig['listTables']) {
+                if (in_array($table, explode(',', $tabConfig['listTables']))) {
                     $info['act'] = $key;
                 }
             }
