@@ -1,5 +1,5 @@
 {
-    "name": "linkhandler",
+    "name": "aoe/linkhandler",
     "description": "Linkhandler Extension.",
     "type": "typo3-cms-extension",
     "homepage": "",
