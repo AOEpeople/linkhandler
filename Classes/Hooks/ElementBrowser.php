@@ -23,6 +23,9 @@ namespace AOE\Linkhandler\Hooks;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use AOE\Linkhandler\TabHandlerInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class ElementBrowser
@@ -142,8 +145,20 @@ class ElementBrowser implements \TYPO3\CMS\Core\ElementBrowser\ElementBrowserHoo
             $tabHandlerClass = $configuration['tabHandler'];
         }
 
-        $tabHandler = new $tabHandlerClass($this->pObj, $this->getaddPassOnParams, $configuration, $currentValue,
-            $this->isRTE(), $this->getCurrentPageId());
+        /** @var ObjectManager $objectManager */
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
+        /** @var TabHandlerInterface $tabHandler */
+        $tabHandler = $objectManager->get(
+            $tabHandlerClass,
+            $this->pObj,
+            $this->getaddPassOnParams,
+            $configuration,
+            $currentValue,
+            $this->isRTE(),
+            $this->getCurrentPageId()
+        );
+
         $content = $tabHandler->getTabContent();
 
         return $content;
