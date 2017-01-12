@@ -45,7 +45,7 @@ class ElementBrowserRecordList extends \TYPO3\CMS\Backend\RecordList\ElementBrow
     /**
      * @var \TYPO3\CMS\Rtehtmlarea\BrowseLinks
      */
-    public $browselistObj;
+    protected $browselistObj;
 
     /**
      * Set the parameters that should be added to the link, in order to keep the required vars for the linkwizard
@@ -69,6 +69,13 @@ class ElementBrowserRecordList extends \TYPO3\CMS\Backend\RecordList\ElementBrow
     public function setOverwriteLinkHandler($linkHandler)
     {
         $this->linkHandler = $linkHandler;
+    }
+
+    /**
+     * @param \TYPO3\CMS\Rtehtmlarea\BrowseLinks $browselistObj
+     */
+    public function setBrowserlistObj($browselistObj) {
+        $this->browselistObj = $browselistObj;
     }
 
     /**
@@ -128,14 +135,14 @@ class ElementBrowserRecordList extends \TYPO3\CMS\Backend\RecordList\ElementBrow
      */
     public function ext_addP()
     {
-        $str = '&act=' . $GLOBALS['SOBE']->browser->act .
+        $str = '&act=' . $this->browselistObj->act .
             '&editorNo=' . $this->browselistObj->editorNo .
             '&contentTypo3Language=' . $this->browselistObj->contentTypo3Language .
             '&contentTypo3Charset=' . $this->browselistObj->contentTypo3Charset .
-            '&mode=' . $GLOBALS['SOBE']->browser->mode .
-            '&expandPage=' . $GLOBALS['SOBE']->browser->expandPage .
+            '&mode=' . $this->browselistObj->mode .
+            '&expandPage=' . $this->browselistObj->expandPage .
             '&RTEtsConfigParams=' . \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('RTEtsConfigParams') .
-            '&bparams=' . rawurlencode($GLOBALS['SOBE']->browser->bparams) .
+            '&bparams=' . rawurlencode($this->browselistObj->bparams) .
             $this->addPassOnParameters;
 
         return $str;

@@ -35,7 +35,14 @@ class RecordTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
     /**
      * @var \TYPO3\CMS\Rtehtmlarea\BrowseLinks
      */
-    public $browselistObj = null;
+    private $browselistObj;
+
+    /**
+     * @param \TYPO3\CMS\Rtehtmlarea\BrowseLinks $browselistObj
+     */
+    public function setBrowserlistObj($browselistObj) {
+        $this->browselistObj = $browselistObj;
+    }
 
     /**
      * returns the uids of the childs of page
@@ -97,9 +104,9 @@ class RecordTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
 
             $c++;
             $bgColorClass = ($c + 1) % 2 ? 'bgColor' : 'bgColor-10';
-            if ($GLOBALS['SOBE']->browser->curUrlInfo['act'] == 'page' &&
-                $GLOBALS['SOBE']->browser->curUrlInfo['pageid'] == $v['row']['uid'] &&
-                $GLOBALS['SOBE']->browser->curUrlInfo['pageid']
+            if ($this->browselistObj->curUrlInfo['act'] == 'page' &&
+                $this->browselistObj->curUrlInfo['pageid'] == $v['row']['uid'] &&
+                $this->browselistObj->curUrlInfo['pageid']
             ) {
                 $arrCol = '<td><img' .
                     \TYPO3\CMS\Backend\Utility\IconUtility::skinImg(
@@ -115,11 +122,11 @@ class RecordTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
 
             if ($this->browselistObj->thisConfig['tx_linkhandler.'][$this->browselistObj->act . '.']['listTables'] != 'pages') {
                 $aOnClick = 'return jumpToUrl(\'' . $this->thisScript . '?act=' .
-                    $GLOBALS['SOBE']->browser->act .
-                    '&editorNo=' . $GLOBALS['SOBE']->browser->editorNo .
-                    '&contentTypo3Language=' . $GLOBALS['SOBE']->browser->contentTypo3Language .
-                    '&contentTypo3Charset=' . $GLOBALS['SOBE']->browser->contentTypo3Charset .
-                    '&mode=' . $GLOBALS['SOBE']->browser->mode .
+                    $this->browselistObj->act .
+                    '&editorNo=' . $this->browselistObj->editorNo .
+                    '&contentTypo3Language=' . $this->browselistObj->contentTypo3Language .
+                    '&contentTypo3Charset=' . $this->browselistObj->contentTypo3Charset .
+                    '&mode=' . $this->browselistObj->mode .
                     '&expandPage=' . $v['row']['uid'] .
                     $addPassOnParams . '\');';
             } else {

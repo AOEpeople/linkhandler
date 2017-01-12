@@ -139,7 +139,7 @@ class RecordTab implements \AOE\Linkhandler\TabHandlerInterface
         $pagetree = GeneralUtility::makeInstance('AOE\Linkhandler\Record\RecordTree');
         /** Initialize page tree, @see \TYPO3\CMS\Backend\Tree\View\AbstractTreeView */
         $pagetree->init();
-        $pagetree->browselistObj = $this->browseLinksObj;
+        $pagetree->setBrowserlistObj($this->browseLinksObj);
         if (array_key_exists('onlyPids', $this->configuration) && $this->configuration['onlyPids'] != '') {
             $pagetree->expandAll = true;
             $pagetree->expandFirst = 1;
@@ -235,7 +235,7 @@ class RecordTab implements \AOE\Linkhandler\TabHandlerInterface
             /** @var \AOE\Linkhandler\Record\ElementBrowserRecordList $dblist */
             $dblist = GeneralUtility::makeInstance('AOE\Linkhandler\Record\ElementBrowserRecordList');
             $dblist->setAddPassOnParameters($this->addPassOnParams);
-            $dblist->browselistObj = $this->browseLinksObj;
+            $dblist->setBrowserlistObj($this->browseLinksObj);
             $dblist->thisScript = $this->browseLinksObj->thisScript;
             $dblist->backPath = $GLOBALS['BACK_PATH'];
             $dblist->thumbs = 0;
