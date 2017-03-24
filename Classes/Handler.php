@@ -189,6 +189,7 @@ class Handler
         array $typoLinkConfigurationArray,
         $recordTableName
     ) {
+        unset($typoLinkConfigurationArray['parameter']);
 
         // pre-compile the "additionalParams"
         $linkConfigurationArray[$recordTableName . '.']['additionalParams'] = $this->localContentObject->stdWrap(
