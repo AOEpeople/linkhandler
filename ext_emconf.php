@@ -36,8 +36,8 @@ $EM_CONF[$_EXTKEY] = array(
             'typo3' => '6.0.0-7.6.99',
         ),
         'conflicts' => array(
-            'ch_rterecords',
-            'tinymce_rte',
+            'ch_rterecords' => '',
+            'tinymce_rte' => '',
         ),
         'suggests' => array(),
     ),
