@@ -33,11 +33,11 @@ $EM_CONF[$_EXTKEY] = array(
     'constraints' => array(
         'depends' => array(
             'php' => '5.3.0-0.0.0',
-            'typo3' => '6.0.0-6.2.99',
+            'typo3' => '6.0.0-7.6.99',
         ),
         'conflicts' => array(
-            'ch_rterecords',
-            'tinymce_rte',
+            'ch_rterecords' => '',
+            'tinymce_rte' => '',
         ),
         'suggests' => array(),
     ),
