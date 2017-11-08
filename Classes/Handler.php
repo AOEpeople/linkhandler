@@ -198,7 +198,7 @@ class Handler
         );
         unset($linkConfigurationArray[$recordTableName . '.']['additionalParams.']);
 
-        if (version_compare(TYPO3_version, '6.2.0', '<')) {
+        if (version_compare(TYPO3_version, '6.2.0', '>')) {
             $mergeLinkConfigurationArray = \TYPO3\CMS\Core\Utility\GeneralUtility::explodeUrl2Array(
                 $linkConfigurationArray[$recordTableName . '.']['additionalParams']
             );
